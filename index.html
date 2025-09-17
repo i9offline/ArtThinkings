@@ -1250,47 +1250,27 @@
             }
 
             initializeAudio() {
-                // Initialize green audio
+                // Simple audio initialization
                 this.greenAudio = document.getElementById('greenPopupAudio');
-                if (this.greenAudio) {
-                    this.greenAudio.volume = 0.7;
-                    console.log('🎵 Green audio element initialized');
-
-                    this.greenAudio.addEventListener('loadeddata', () => {
-                        console.log('✅ Green audio loaded successfully - ready to play');
-                    });
-
-                    this.greenAudio.addEventListener('canplay', () => {
-                        console.log('✅ Green audio can play');
-                    });
-
-                    this.greenAudio.addEventListener('error', (e) => {
-                        console.error('❌ Green audio error during load:', e);
-                    });
-                } else {
-                    console.error('❌ Green audio element not found!');
-                }
-
-                // Initialize red audio
                 this.redAudio = document.getElementById('redPopupAudio');
-                if (this.redAudio) {
-                    this.redAudio.volume = 1.0; // Maximum volume for red audio
-                    console.log('🔴 Red audio element initialized');
 
-                    this.redAudio.addEventListener('loadeddata', () => {
-                        console.log('✅ Red audio loaded successfully - ready to play');
-                    });
-
-                    this.redAudio.addEventListener('canplay', () => {
-                        console.log('✅ Red audio can play');
-                    });
-
-                    this.redAudio.addEventListener('error', (e) => {
-                        console.error('❌ Red audio error during load:', e);
-                    });
-                } else {
-                    console.error('❌ Red audio element not found!');
+                if (this.greenAudio) {
+                    this.greenAudio.volume = 0.8;
+                    this.greenAudio.preload = 'auto';
+                    console.log('🎵 Green audio ready');
                 }
+
+                if (this.redAudio) {
+                    this.redAudio.volume = 0.8;
+                    this.redAudio.preload = 'auto';
+                    console.log('🔴 Red audio ready');
+                }
+
+                // Force load audio files
+                setTimeout(() => {
+                    if (this.greenAudio) this.greenAudio.load();
+                    if (this.redAudio) this.redAudio.load();
+                }, 100);
             }
 
             testAudio() {
@@ -1532,30 +1512,33 @@
                 this.currentCandle = null;
                 this.candleStartTime = Date.now();
                 this.candleInterval = 5000; // 5 second candles
-                
+                this.lastPopupTime = 0; // Prevent spam
+
                 setInterval(() => {
                     const now = Date.now();
-                    const lastCandle = this.priceHistory[this.priceHistory.length - 1];
-                    
-                    // Check if we need to start a new candle (1-minute intervals)
+
+                    // Check if we need to start a new candle
                     if (!this.currentCandle || (now - this.candleStartTime) >= this.candleInterval) {
                         // Finalize previous candle if exists
                         if (this.currentCandle) {
                             this.priceHistory.push(this.currentCandle);
-                            
-                            // Track consecutive candles for popups
-                            const direction = this.currentCandle.close > this.currentCandle.open ? 'up' : 'down';
-                            if (direction === 'down') {
+
+                            // Simple consecutive candle tracking
+                            const isRed = this.currentCandle.close < this.currentCandle.open;
+                            const isGreen = this.currentCandle.close > this.currentCandle.open;
+
+                            if (isRed) {
                                 this.consecutiveRedCandles++;
                                 this.consecutiveGreenCandles = 0;
-                                console.log('Red candle completed. Consecutive red:', this.consecutiveRedCandles);
-                            } else {
+                            } else if (isGreen) {
                                 this.consecutiveGreenCandles++;
                                 this.consecutiveRedCandles = 0;
-                                console.log('Green candle completed. Consecutive green:', this.consecutiveGreenCandles);
                             }
+
+                            // Immediate popup check after candle completion
+                            this.checkForPopupImmediate();
                         }
-                        
+
                         // Start new candle
                         this.currentCandle = {
                             open: this.currentPrice,
@@ -1569,11 +1552,10 @@
                         this.candleStartTime = now;
                     }
 
-                    // Generate realistic intracandle price movement
-                    const volatility = 0.012 + Math.random() * 0.008;
-                    const trend = (Math.random() - 0.5) * 0.002;
-                    const change = (Math.random() - 0.5) * volatility + trend;
-                    
+                    // Generate price movement
+                    const volatility = 0.015 + Math.random() * 0.01;
+                    const change = (Math.random() - 0.5) * volatility;
+
                     const oldPrice = this.currentPrice;
                     this.currentPrice *= (1 + change);
                     this.currentPrice = Math.max(this.currentPrice, 10);
@@ -1586,7 +1568,7 @@
                         this.currentCandle.direction = this.currentCandle.close > this.currentCandle.open ? 'up' : 'down';
                     }
 
-                    // Keep only last 100 completed candles for performance
+                    // Keep only last 100 completed candles
                     if (this.priceHistory.length > 100) {
                         this.priceHistory.shift();
                     }
@@ -1596,19 +1578,8 @@
                     this.updatePnL();
                     this.updatePositionDisplay();
                     this.updateTechnicalIndicators();
-                    this.checkForPopup();
 
-                    // Play sounds for significant price movements - DISABLED
-                    // const priceChangePercent = Math.abs((this.currentPrice - oldPrice) / oldPrice) * 100;
-                    // if (priceChangePercent > 0.08) {
-                    //     if (this.currentPrice > oldPrice) {
-                    //         this.playSound(660, 0.1, 'sine'); // Up sound
-                    //     } else {
-                    //         this.playSound(440, 0.1, 'sine'); // Down sound
-                    //     }
-                    // }
-
-                }, 200); // Update every 0.5 seconds for faster candle formation
+                }, 250); // More reasonable updates
             }
 
             updatePriceDisplay() {
@@ -2068,145 +2039,116 @@
                 }
             }
 
-            checkForPopup() {
+            checkForPopupImmediate() {
+                const now = Date.now();
+                // Prevent spam - at least 5 seconds between popups
+                if (now - this.lastPopupTime < 5000) {
+                    return;
+                }
+
                 // Show red popup after 2 consecutive red candles
                 if (this.consecutiveRedCandles >= 2) {
-                    console.log('Showing red popup - consecutive red:', this.consecutiveRedCandles);
+                    console.log('🔴 TRIGGERING RED POPUP - consecutive red:', this.consecutiveRedCandles);
                     this.showRedPopup();
-                    this.consecutiveRedCandles = 0; // Reset to avoid spam
+                    this.consecutiveRedCandles = 0;
+                    this.lastPopupTime = now;
+                    return;
                 }
 
                 // Show green popup after 2 consecutive green candles
                 if (this.consecutiveGreenCandles >= 2) {
-                    console.log('Showing green popup - consecutive green:', this.consecutiveGreenCandles);
+                    console.log('🟢 TRIGGERING GREEN POPUP - consecutive green:', this.consecutiveGreenCandles);
                     this.showGreenPopup();
-                    this.consecutiveGreenCandles = 0; // Reset to avoid spam
-                }
-
-                // Debug logging for consecutive candles
-                if (this.consecutiveRedCandles > 0) {
-                    console.log('Consecutive red candles:', this.consecutiveRedCandles);
-                }
-                if (this.consecutiveGreenCandles > 0) {
-                    console.log('Consecutive green candles:', this.consecutiveGreenCandles);
+                    this.consecutiveGreenCandles = 0;
+                    this.lastPopupTime = now;
+                    return;
                 }
             }
 
             showRedPopup() {
-                console.log('showRedPopup called');
+                console.log('🔴 SHOWING RED POPUP NOW!');
+
                 const messages = [
                     { title: "📉 Bloomberg Terminal Alert", message: "Consecutive bearish candles detected. Your portfolio is bleeding red faster than a Reuters breaking news banner. Even the Wall Street Journal would call this 'concerning.'" },
                     { title: "⚠️ CNBC Breaking News", message: "Technical indicators suggest the bulls have lost their stamina. This downturn is getting more coverage than a New York Times front page scandal." },
                     { title: "🔴 Financial Times Warning", message: "Your position is shrinking faster than credibility at a Fox Business debate. Time to review your exit strategy before MarketWatch notices." },
                     { title: "📊 Bloomberg Markets Alert", message: "The market is displaying more red flags than a Communist parade. Even Bloomberg TV anchors are looking concerned during commercial breaks." },
-                    { title: "💸 Reuters Flash Update", message: "Whales have pulled out faster than CNBC hosts changing their predictions. Your unrealized gains just made headlines in the Financial Times." },
-                    { title: "🐻 WSJ Market Analysis", message: "Current sentiment is colder than a Bloomberg terminal in a power outage. The New York Times business section would describe this as 'challenging market conditions.'" },
-                    { title: "📈 Yahoo Finance Alert", message: "What goes up must come down, and it's falling faster than a CNBC stock picker's reputation. Even Fortune magazine couldn't spin this positively." },
-                    { title: "⛔ MarketWatch Breaking", message: "Key support levels breached with the precision of a Wall Street Journal investigation. This story is trending faster than a Bloomberg scoop." }
+                    { title: "💸 Reuters Flash Update", message: "Whales have pulled out faster than CNBC hosts changing their predictions. Your unrealized gains just made headlines in the Financial Times." }
                 ];
 
                 const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
-                const popupContent = document.getElementById('popupContent');
-                const popupOverlay = document.getElementById('popupOverlay');
+                // Show popup immediately
+                document.getElementById('popupTitle').textContent = randomMessage.title;
+                document.getElementById('popupMessage').textContent = randomMessage.message;
+                document.getElementById('popupContent').className = 'popup-content red';
+                document.getElementById('popupOverlay').style.display = 'flex';
 
-                if (popupContent && popupOverlay) {
-                    popupContent.className = 'popup-content red'; // Apply red class
+                // Force play red audio immediately - NO CONDITIONS
+                console.log('🔴 FORCING RED AUDIO PLAY');
 
-                    document.getElementById('popupTitle').textContent = randomMessage.title;
-                    document.getElementById('popupMessage').textContent = randomMessage.message;
-                    popupOverlay.style.display = 'flex';
+                // Try MP3 first
+                if (this.redAudio) {
+                    this.redAudio.pause();
+                    this.redAudio.currentTime = 0;
+                    this.redAudio.volume = 0.8;
 
-                    // Play red popup audio
-                    console.log('🔴 Attempting to play red popup sound...');
-
-                    if (this.redAudio) {
-                        // Force stop any current playback and reset
-                        this.redAudio.pause();
-                        this.redAudio.currentTime = 0;
-                        this.redAudio.volume = this.volume * 1.0; // 100% volume
-
-                        this.redAudio.play()
-                            .then(() => {
-                                console.log('✅ Red MP3 audio playing successfully!');
-                            })
-                            .catch(error => {
-                                console.log('❌ Red MP3 failed, using synthetic sound:', error.name);
-                                this.playFailureSound();
-                            });
-                    } else {
-                        console.log('🔄 Red MP3 not available, using synthetic failure sound');
-                        this.playFailureSound();
-                    }
-
-                    console.log('Red popup displayed');
-
-                    // Auto-close popup after 8 seconds
-                    setTimeout(() => {
-                        closePopup();
-                    }, 8000);
+                    this.redAudio.play()
+                        .then(() => console.log('✅ RED AUDIO SUCCESS'))
+                        .catch(() => {
+                            console.log('🔄 RED AUDIO FALLBACK');
+                            this.playFailureSound();
+                        });
                 } else {
-                    console.error('Popup elements not found');
+                    // Synthetic sound fallback
+                    this.playFailureSound();
                 }
+
+                // Auto-close
+                setTimeout(() => closePopup(), 6000);
             }
 
             showGreenPopup() {
-                console.log('showGreenPopup called');
+                console.log('🟢 SHOWING GREEN POPUP NOW!');
+
                 const messages = [
                     { title: "🚀 Bloomberg Terminal Surge", message: "Consecutive green candles detected! Your portfolio is performing better than Jim Cramer's predictions. This rally is getting more attention than a New York Times exposé." },
                     { title: "💎 Financial Times Bullish", message: "This uptrend is lasting longer than most CNBC host predictions. Even the Wall Street Journal's skeptical editors are impressed by this momentum." },
                     { title: "🔥 Reuters Market Flash", message: "Institutional money is flowing faster than Bloomberg News breaking stories. MarketWatch is calling this 'exceptional liquidity conditions' in their headlines." },
                     { title: "📈 WSJ Breaking Surge", message: "Price action is slicing through resistance with the precision of a Financial Times investigation. This story is trending on every Yahoo Finance feed." },
-                    { title: "💥 CNBC Power Hour", message: "Trading volume is exploding with more enthusiasm than a Bloomberg TV exclusive interview. Fortune magazine would feature this rally on their cover." },
-                    { title: "🌟 MarketWatch Featured", message: "Your positions are growing faster than Fox Business viewership during market hours. Even the New York Times business section is taking notes." },
-                    { title: "💰 Bloomberg Scoop Alert", message: "Bears are capitulating faster than CNBC analysts changing their ratings. This short squeeze is making Reuters headlines worldwide." },
-                    { title: "🔥 Financial Media Frenzy", message: "Market euphoria is heating up like a Wall Street Journal auction room. Bloomberg Terminal users are refreshing their screens in disbelief." }
+                    { title: "💰 Bloomberg Scoop Alert", message: "Bears are capitulating faster than CNBC analysts changing their ratings. This short squeeze is making Reuters headlines worldwide." }
                 ];
 
                 const randomMessage = messages[Math.floor(Math.random() * messages.length)];
 
-                const popupContent = document.getElementById('popupContent');
-                const popupOverlay = document.getElementById('popupOverlay');
-                const audio = document.getElementById('greenPopupAudio');
+                // Show popup immediately
+                document.getElementById('popupTitle').textContent = randomMessage.title;
+                document.getElementById('popupMessage').textContent = randomMessage.message;
+                document.getElementById('popupContent').className = 'popup-content green';
+                document.getElementById('popupOverlay').style.display = 'flex';
 
-                if (popupContent && popupOverlay) {
-                    popupContent.className = 'popup-content green';
+                // Force play green audio immediately - NO CONDITIONS
+                console.log('🟢 FORCING GREEN AUDIO PLAY');
 
-                    document.getElementById('popupTitle').textContent = randomMessage.title;
-                    document.getElementById('popupMessage').textContent = randomMessage.message;
-                    popupOverlay.style.display = 'flex';
+                // Try MP3 first
+                if (this.greenAudio) {
+                    this.greenAudio.pause();
+                    this.greenAudio.currentTime = 0;
+                    this.greenAudio.volume = 0.8;
 
-                    // Try MP3 audio first, then fallback to synthetic sound
-                    console.log('🎵 Attempting to play green popup sound...');
-
-                    if (this.greenAudio) {
-                        // Force stop any current playback and reset
-                        this.greenAudio.pause();
-                        this.greenAudio.currentTime = 0;
-                        this.greenAudio.volume = this.volume * 0.7;
-
-                        this.greenAudio.play()
-                            .then(() => {
-                                console.log('✅ Green MP3 audio playing successfully!');
-                            })
-                            .catch(error => {
-                                console.log('❌ Green MP3 failed, using synthetic sound:', error.name);
-                                this.playVictorySound();
-                            });
-                    } else {
-                        console.log('🔄 Green MP3 not available, using synthetic victory sound');
-                        this.playVictorySound();
-                    }
-
-                    console.log('Green popup displayed');
-
-                    // Auto-close popup after 8 seconds
-                    setTimeout(() => {
-                        closePopup();
-                    }, 8000);
+                    this.greenAudio.play()
+                        .then(() => console.log('✅ GREEN AUDIO SUCCESS'))
+                        .catch(() => {
+                            console.log('🔄 GREEN AUDIO FALLBACK');
+                            this.playVictorySound();
+                        });
                 } else {
-                    console.error('Popup elements not found');
+                    // Synthetic sound fallback
+                    this.playVictorySound();
                 }
+
+                // Auto-close
+                setTimeout(() => closePopup(), 6000);
             }
         }
 
@@ -2220,40 +2162,29 @@
             window.simulator = new TradingSimulator();
         });
 
-        // Handle audio context user interaction requirement
-        document.addEventListener('click', function initAudio() {
-            console.log('🔊 User interaction detected - enabling audio...');
+        // Simple audio activation on user click
+        document.addEventListener('click', function() {
+            console.log('🔊 Audio activated by user click');
 
-            if (window.simulator && window.simulator.audioContext.state === 'suspended') {
-                window.simulator.audioContext.resume().then(() => {
-                    console.log('✅ Audio context resumed');
-                });
-            }
-
-            // Enable HTML5 audio playback
-            const greenAudio = document.getElementById('greenPopupAudio');
-            const redAudio = document.getElementById('redPopupAudio');
-
-            if (greenAudio) {
-                greenAudio.muted = false;
-                greenAudio.volume = 0.7;
-                console.log('✅ Green HTML5 audio enabled');
-            }
-
-            if (redAudio) {
-                redAudio.muted = false;
-                redAudio.volume = 1.0; // Maximum volume for red audio
-                console.log('✅ Red HTML5 audio enabled');
-            }
-
-            // Test audio immediately
-            setTimeout(() => {
-                if (window.simulator) {
-                    window.simulator.testAudio();
+            if (window.simulator) {
+                // Resume audio context
+                if (window.simulator.audioContext.state === 'suspended') {
+                    window.simulator.audioContext.resume();
                 }
-            }, 500);
 
-            document.removeEventListener('click', initAudio);
+                // Enable audio elements
+                if (window.simulator.greenAudio) {
+                    window.simulator.greenAudio.muted = false;
+                    window.simulator.greenAudio.volume = 0.8;
+                }
+
+                if (window.simulator.redAudio) {
+                    window.simulator.redAudio.muted = false;
+                    window.simulator.redAudio.volume = 0.8;
+                }
+
+                console.log('✅ All audio systems ready');
+            }
         }, { once: true });
     </script>
 </body>
