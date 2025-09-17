@@ -940,6 +940,221 @@
         .stat-sentiment.greed {
             color: #26a69a;
         }
+
+        /* Styles pour le popup d'immersion sonore */
+        .sound-immersion-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            animation: fadeInOverlay 0.5s ease-out;
+        }
+
+        .sound-immersion-popup {
+            background: linear-gradient(145deg, #000000 0%, #1a1a1a 50%, #0a0a0a 100%);
+            border: 2px solid #ff8c00;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 520px;
+            min-width: 400px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.4),
+                0 15px 30px rgba(255, 140, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            animation: slideInPopup 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .sound-immersion-popup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff8c00, #ff6b00, #ff4500, #ff8c00);
+            background-size: 200% 100%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        .sound-immersion-popup::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, transparent, rgba(255, 140, 0, 0.1), transparent);
+            border-radius: 22px;
+            z-index: -1;
+            animation: borderGlow 2s ease-in-out infinite alternate;
+        }
+
+        .sound-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+            animation: pulseIcon 2s ease-in-out infinite;
+            filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.6));
+        }
+
+        .sound-immersion-title {
+            color: #ff8c00;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0 0 25px 0;
+            text-shadow: 
+                0 0 10px rgba(255, 140, 0, 0.5),
+                0 4px 8px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.5px;
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        .sound-immersion-text {
+            color: #d1d4dc;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin: 0 0 20px 0;
+            font-weight: 400;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .sound-immersion-highlight {
+            color: #ff8c00;
+            font-weight: 600;
+            text-shadow: 0 0 8px rgba(255, 140, 0, 0.4);
+        }
+
+        .sound-immersion-button {
+            background: linear-gradient(145deg, #ff8c00, #ff7700);
+            color: #000000;
+            border: none;
+            border-radius: 12px;
+            padding: 16px 32px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 20px auto 0;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 8px 25px rgba(255, 140, 0, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .sound-immersion-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .sound-immersion-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 
+                0 12px 35px rgba(255, 140, 0, 0.4),
+                0 6px 18px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            background: linear-gradient(145deg, #ffb347, #ff8c00);
+        }
+
+        .sound-immersion-button:hover::before {
+            left: 100%;
+        }
+
+        .sound-immersion-button:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .countdown-timer {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: rgba(255, 140, 0, 0.2);
+            border: 1px solid rgba(255, 140, 0, 0.4);
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            color: #ff8c00;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInPopup {
+            0% {
+                transform: scale(0.7) translateY(-50px);
+                opacity: 0;
+                filter: blur(10px);
+            }
+            50% {
+                transform: scale(1.05) translateY(10px);
+                opacity: 0.8;
+                filter: blur(2px);
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+                filter: blur(0);
+            }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes borderGlow {
+            from { opacity: 0.3; }
+            to { opacity: 0.8; }
+        }
+
+        @keyframes pulseIcon {
+            0%, 100% { 
+                transform: scale(1);
+                filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.6));
+            }
+            50% { 
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 30px rgba(255, 140, 0, 0.9));
+            }
+        }
+
+        @keyframes titleGlow {
+            from { 
+                text-shadow: 
+                    0 0 10px rgba(255, 140, 0, 0.5),
+                    0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+            to { 
+                text-shadow: 
+                    0 0 20px rgba(255, 140, 0, 0.8),
+                    0 0 30px rgba(255, 140, 0, 0.4),
+                    0 4px 8px rgba(0, 0, 0, 0.3);
+            }
+        }
     </style>
 </head>
 <body>
@@ -1178,6 +1393,22 @@
         </div>
     </div>
 
+    <!-- Popup d'immersion sonore à l'ouverture -->
+    <div class="sound-immersion-overlay" id="soundImmersionPopup" style="display: flex;">
+        <div class="sound-immersion-popup">
+            <div class="countdown-timer" id="countdownTimer">20s</div>
+            <span class="sound-icon">🔊</span>
+            <h2 class="sound-immersion-title">Sound Experience</h2>
+            <p class="sound-immersion-text">
+                Please <span class="sound-immersion-highlight">turn up your volume</span> 
+                for the best audio experience.
+            </p>
+            <button class="sound-immersion-button" onclick="closeSoundImmersionPopup()">
+                Got it!
+            </button>
+        </div>
+    </div>
+
     <div class="popup-overlay" id="popupOverlay">
         <div class="popup-content" id="popupContent">
             <h2 id="popupTitle">📉 Oh No!</h2>
@@ -1186,11 +1417,16 @@
         </div>
     </div>
 
-    <audio id="greenPopupAudio" preload="auto">
+    <!-- Green popup sounds -->
+    <audio id="greenPopupAudio1" preload="auto">
         <source src="green-popup-sound.mp3" type="audio/mpeg">
     </audio>
+    <audio id="greenPopupAudio2" preload="auto">
+        <source src="green-popup-sound-2.mp3" type="audio/mpeg">
+    </audio>
 
-    <audio id="redPopupAudio" preload="auto">
+    <!-- Red popup sounds -->
+    <audio id="redPopupAudio1" preload="auto">
         <source src="red-popup-sound.mp3" type="audio/mpeg">
     </audio>
 
@@ -1203,17 +1439,16 @@
                 this.leverage = 50;
                 this.balance = 1000;
                 this.position = null;
-                this.volume = 0.5;
+                this.volume = 0.8;
                 this.consecutiveRedCandles = 0;
                 this.consecutiveGreenCandles = 0;
-                this.currentSyntheticSounds = [];
 
+                // Simple audio setup
                 this.initializeElements();
                 this.setupEventListeners();
-                this.initializeAudio();
-                this.generateInitialHistory(); // Generate initial candlesticks
+                this.initializeSimpleAudio();
+                this.generateInitialHistory();
                 this.startPriceSimulation();
-                this.createAudioContext();
             }
 
             initializeElements() {
@@ -1245,51 +1480,180 @@
                 this.rsiPeriod = 14;
             }
 
-            createAudioContext() {
-                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            }
 
-            initializeAudio() {
-                // Simple audio initialization
-                this.greenAudio = document.getElementById('greenPopupAudio');
-                this.redAudio = document.getElementById('redPopupAudio');
-
-                if (this.greenAudio) {
-                    this.greenAudio.volume = 0.8;
-                    this.greenAudio.preload = 'auto';
-                    console.log('🎵 Green audio ready');
-                }
-
-                if (this.redAudio) {
-                    this.redAudio.volume = 0.8;
-                    this.redAudio.preload = 'auto';
-                    console.log('🔴 Red audio ready');
-                }
-
-                // Force load audio files
-                setTimeout(() => {
-                    if (this.greenAudio) this.greenAudio.load();
-                    if (this.redAudio) this.redAudio.load();
-                }, 100);
-            }
-
-            testAudio() {
-                console.log('🧪 Testing audio functionality...');
-                if (this.greenAudio) {
-                    this.greenAudio.currentTime = 0;
-                    this.greenAudio.play()
-                        .then(() => {
-                            console.log('✅ TEST: Audio works perfectly!');
-                            setTimeout(() => {
-                                this.greenAudio.pause();
-                                this.greenAudio.currentTime = 0;
-                            }, 1000);
-                        })
-                        .catch(e => {
-                            console.error('❌ TEST: Audio failed:', e);
+            initializeSimpleAudio() {
+                console.log('🔊 Initializing enhanced audio system with multiple sounds');
+                
+                // Initialize audio activation state
+                this.audioActivated = false;
+                this.audioReady = false;
+                
+                // Get all green audio elements
+                this.greenAudios = [
+                    document.getElementById('greenPopupAudio1'),
+                    document.getElementById('greenPopupAudio2')
+                ].filter(audio => audio !== null);
+                
+                // Get all red audio elements
+                this.redAudios = [
+                    document.getElementById('redPopupAudio1')
+                ].filter(audio => audio !== null);
+                
+                console.log(`🎵 Found ${this.greenAudios.length} green sounds and ${this.redAudios.length} red sounds`);
+                
+                // Setup all green audios with better error handling
+                this.greenAudios.forEach((audio, index) => {
+                    if (audio) {
+                        audio.volume = 0.7;
+                        audio.preload = 'auto';
+                        audio.muted = false;
+                        
+                        // Force load the audio
+                        audio.load();
+                        
+                        audio.addEventListener('canplaythrough', () => {
+                            console.log(`✅ Green audio ${index + 1} fully loaded and ready`);
+                            this.updateSimpleAudioStatus();
                         });
-                }
+                        
+                        audio.addEventListener('loadeddata', () => {
+                            console.log(`📄 Green audio ${index + 1} data loaded`);
+                        });
+                        
+                        audio.addEventListener('error', (e) => {
+                            console.warn(`❌ Green audio ${index + 1} error:`, e.target.error);
+                            this.updateSimpleAudioStatus();
+                        });
+                        
+                        audio.addEventListener('ended', () => {
+                            audio.currentTime = 0; // Reset for next play
+                        });
+                    }
+                });
+                
+                // Setup all red audios with better error handling
+                this.redAudios.forEach((audio, index) => {
+                    if (audio) {
+                        audio.volume = 0.7;
+                        audio.preload = 'auto';
+                        audio.muted = false;
+                        
+                        // Force load the audio
+                        audio.load();
+                        
+                        audio.addEventListener('canplaythrough', () => {
+                            console.log(`✅ Red audio ${index + 1} fully loaded and ready`);
+                            this.updateSimpleAudioStatus();
+                        });
+                        
+                        audio.addEventListener('loadeddata', () => {
+                            console.log(`📄 Red audio ${index + 1} data loaded`);
+                        });
+                        
+                        audio.addEventListener('error', (e) => {
+                            console.warn(`❌ Red audio ${index + 1} error:`, e.target.error);
+                            this.updateSimpleAudioStatus();
+                        });
+                        
+                        audio.addEventListener('ended', () => {
+                            audio.currentTime = 0; // Reset for next play
+                        });
+                    }
+                });
+                
+                // Setup user interaction listeners for audio activation
+                this.setupAudioActivation();
+                
+                // Update status initially and check readiness
+                setTimeout(() => {
+                    this.updateSimpleAudioStatus();
+                    this.checkAudioReadiness();
+                }, 1000);
             }
+            
+            setupAudioActivation() {
+                const activateAudio = () => {
+                    if (this.audioActivated) return;
+                    
+                    console.log('🎯 User interaction detected - activating audio system');
+                    this.audioActivated = true;
+                    
+                    // Try to activate each audio element
+                    [...this.greenAudios, ...this.redAudios].forEach((audio, index) => {
+                        if (audio) {
+                            // Play and immediately pause to activate the audio context
+                            audio.play().then(() => {
+                                audio.pause();
+                                audio.currentTime = 0;
+                                console.log(`🔓 Audio ${index + 1} activated successfully`);
+                            }).catch(e => {
+                                console.warn(`⚠️ Failed to activate audio ${index + 1}:`, e);
+                            });
+                        }
+                    });
+                    
+                    this.audioReady = true;
+                    console.log('✅ Audio system fully activated and ready');
+                };
+                
+                // Listen for various user interactions
+                ['click', 'touchstart', 'keydown', 'mousedown'].forEach(eventType => {
+                    document.addEventListener(eventType, activateAudio, { passive: true, once: true });
+                });
+            }
+            
+            checkAudioReadiness() {
+                const greenReady = this.greenAudios.filter(audio => audio && audio.readyState >= 2).length;
+                const redReady = this.redAudios.filter(audio => audio && audio.readyState >= 2).length;
+                const totalReady = greenReady + redReady;
+                const totalSounds = this.greenAudios.length + this.redAudios.length;
+                
+                console.log(`🎵 Audio readiness check: ${totalReady}/${totalSounds} sounds ready`);
+                
+                if (totalReady === totalSounds && totalSounds > 0) {
+                    console.log('✅ All audio files are ready to play');
+                    return true;
+                }
+                
+                // Retry checking in 2 seconds if not all ready
+                if (totalReady < totalSounds) {
+                    setTimeout(() => this.checkAudioReadiness(), 2000);
+                }
+                
+                return false;
+            }
+
+
+
+
+            updateSimpleAudioStatus() {
+                const statusDiv = document.getElementById('audioStatus');
+                if (!statusDiv) return;
+
+                // Count ready sounds
+                const greenReady = this.greenAudios.filter(audio => audio && audio.readyState >= 2).length;
+                const redReady = this.redAudios.filter(audio => audio && audio.readyState >= 2).length;
+                
+                const totalGreen = this.greenAudios.length;
+                const totalRed = this.redAudios.length;
+                const totalReady = greenReady + redReady;
+                const totalSounds = totalGreen + totalRed;
+                
+                let status = '';
+                if (totalReady === totalSounds && totalSounds > 0) {
+                    status = `✅ READY - All ${totalSounds} sounds loaded (${greenReady}🟢 ${redReady}🔴)`;
+                    statusDiv.style.color = '#26a69a';
+                } else if (totalReady > 0) {
+                    status = `⚠️ LOADING - ${totalReady}/${totalSounds} sounds ready (${greenReady}🟢 ${redReady}🔴)`;
+                    statusDiv.style.color = '#ff8c00';
+                } else {
+                    status = `⏳ LOADING - ${totalSounds} sounds loading...`;
+                    statusDiv.style.color = '#ffa726';
+                }
+                
+                statusDiv.innerHTML = status;
+            }
+
 
             generateInitialHistory() {
                 // Generate 50 initial OHLC candlesticks for realistic display
@@ -1362,101 +1726,6 @@
                 }, 100);
             }
 
-            playSound(frequency, duration, type = 'sine') {
-                if (this.volume === 0) return;
-
-                const oscillator = this.audioContext.createOscillator();
-                const gainNode = this.audioContext.createGain();
-
-                oscillator.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-
-                oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-                oscillator.type = type;
-
-                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(this.volume * 0.1, this.audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
-
-                oscillator.start(this.audioContext.currentTime);
-                oscillator.stop(this.audioContext.currentTime + duration);
-            }
-
-            playVictorySound() {
-                if (this.volume === 0) return;
-
-                // Stop any current synthetic sounds
-                this.stopAllSyntheticSounds();
-
-                // Play a victory chord progression
-                const notes = [
-                    { freq: 523, time: 0, duration: 0.3 },    // C5
-                    { freq: 659, time: 0.1, duration: 0.3 },  // E5
-                    { freq: 784, time: 0.2, duration: 0.4 },  // G5
-                    { freq: 1047, time: 0.3, duration: 0.5 }  // C6
-                ];
-
-                this.currentSyntheticSounds = [];
-                notes.forEach(note => {
-                    const timeoutId = setTimeout(() => {
-                        this.playSound(note.freq, note.duration, 'triangle');
-                    }, note.time * 1000);
-                    this.currentSyntheticSounds.push(timeoutId);
-                });
-            }
-
-            playFailureSound() {
-                if (this.volume === 0) return;
-
-                // Stop any current synthetic sounds
-                this.stopAllSyntheticSounds();
-
-                // Play a dramatic failure sound progression - louder than victory
-                const notes = [
-                    { freq: 440, time: 0, duration: 0.2 },    // A4
-                    { freq: 392, time: 0.1, duration: 0.2 },  // G4
-                    { freq: 349, time: 0.2, duration: 0.3 },  // F4
-                    { freq: 294, time: 0.3, duration: 0.4 },  // D4
-                    { freq: 220, time: 0.4, duration: 0.5 }   // A3 (low)
-                ];
-
-                this.currentSyntheticSounds = [];
-                notes.forEach(note => {
-                    const timeoutId = setTimeout(() => {
-                        this.playLouderSound(note.freq, note.duration, 'sawtooth');
-                    }, note.time * 1000);
-                    this.currentSyntheticSounds.push(timeoutId);
-                });
-            }
-
-            stopAllSyntheticSounds() {
-                if (this.currentSyntheticSounds) {
-                    this.currentSyntheticSounds.forEach(timeoutId => {
-                        clearTimeout(timeoutId);
-                    });
-                    this.currentSyntheticSounds = [];
-                }
-            }
-
-            playLouderSound(frequency, duration, type = 'sine') {
-                if (this.volume === 0) return;
-
-                const oscillator = this.audioContext.createOscillator();
-                const gainNode = this.audioContext.createGain();
-
-                oscillator.connect(gainNode);
-                gainNode.connect(this.audioContext.destination);
-
-                oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-                oscillator.type = type;
-
-                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(this.volume * 0.2, this.audioContext.currentTime + 0.01); // Double volume
-                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
-
-                oscillator.start(this.audioContext.currentTime);
-                oscillator.stop(this.audioContext.currentTime + duration);
-            }
 
             setupEventListeners() {
                 // Leverage buttons
@@ -1488,7 +1757,6 @@
                 };
 
                 this.updatePositionDisplay();
-                this.playSound(800, 0.2, 'square'); // Position open sound
             }
 
             closePosition() {
@@ -1503,8 +1771,6 @@
 
                 this.updatePositionDisplay();
                 this.updateBalance();
-
-                this.playSound(pnl > 0 ? 1000 : 300, 0.3, 'triangle'); // Win/Loss sound
             }
 
             startPriceSimulation() {
@@ -2084,29 +2350,97 @@
                 document.getElementById('popupContent').className = 'popup-content red';
                 document.getElementById('popupOverlay').style.display = 'flex';
 
-                // Force play red audio immediately - NO CONDITIONS
-                console.log('🔴 FORCING RED AUDIO PLAY');
-
-                // Try MP3 first
-                if (this.redAudio) {
-                    this.redAudio.pause();
-                    this.redAudio.currentTime = 0;
-                    this.redAudio.volume = 0.8;
-
-                    this.redAudio.play()
-                        .then(() => console.log('✅ RED AUDIO SUCCESS'))
-                        .catch(() => {
-                            console.log('🔄 RED AUDIO FALLBACK');
-                            this.playFailureSound();
-                        });
-                } else {
-                    // Synthetic sound fallback
-                    this.playFailureSound();
-                }
+                // Simple audio playback
+                this.playRedAudio();
 
                 // Auto-close
-                setTimeout(() => closePopup(), 12000);
+                setTimeout(() => closePopup(), 10000);
             }
+
+            playRedAudio() {
+                console.log('🔴 Playing random red popup sound');
+                
+                // Check if audio system is ready
+                if (!this.audioActivated) {
+                    console.warn('⚠️ Audio not yet activated by user interaction');
+                    return;
+                }
+                
+                if (this.redAudios && this.redAudios.length > 0) {
+                    // Filter only ready audio elements
+                    const readyAudios = this.redAudios.filter(audio => 
+                        audio && audio.readyState >= 2 && !audio.error
+                    );
+                    
+                    if (readyAudios.length === 0) {
+                        console.warn('⚠️ No red audio files are ready to play yet');
+                        // Try to play the first available audio anyway as fallback
+                        const fallbackAudio = this.redAudios.find(audio => audio && !audio.error);
+                        if (fallbackAudio) {
+                            this.attemptAudioPlay(fallbackAudio, 'RED FALLBACK');
+                        }
+                        return;
+                    }
+                    
+                    // Select a random ready red audio
+                    const randomIndex = Math.floor(Math.random() * readyAudios.length);
+                    const selectedAudio = readyAudios[randomIndex];
+                    const originalIndex = this.redAudios.indexOf(selectedAudio);
+                    
+                    console.log(`🎲 Selected red sound ${originalIndex + 1}/${this.redAudios.length} (ready: ${readyAudios.length})`);
+                    
+                    this.attemptAudioPlay(selectedAudio, `RED ${originalIndex + 1}`);
+                } else {
+                    console.warn('❌ No red audio elements found');
+                }
+            }
+            
+            attemptAudioPlay(audio, label) {
+                if (!audio) {
+                    console.warn(`❌ ${label}: Audio element is null`);
+                    return;
+                }
+                
+                // Reset audio to beginning
+                try {
+                    audio.currentTime = 0;
+                } catch (e) {
+                    console.warn(`⚠️ ${label}: Failed to reset currentTime`, e);
+                }
+                
+                // Ensure volume is set
+                audio.volume = 0.7;
+                audio.muted = false;
+                
+                // Attempt to play with comprehensive error handling
+                const playPromise = audio.play();
+                
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            console.log(`✅ ${label}: Audio played successfully`);
+                        })
+                        .catch(error => {
+                            console.warn(`⚠️ ${label}: Play failed:`, error.name, error.message);
+                            
+                            // Try additional fallback strategies
+                            if (error.name === 'NotAllowedError') {
+                                console.log(`🔄 ${label}: Attempting to reactivate audio context`);
+                                setTimeout(() => {
+                                    if (audio && !audio.error) {
+                                        audio.play().catch(e => {
+                                            console.warn(`❌ ${label}: Fallback also failed:`, e);
+                                        });
+                                    }
+                                }, 100);
+                            }
+                        });
+                } else {
+                    // Older browsers that don't return a promise
+                    console.log(`🔄 ${label}: Playing without promise support`);
+                }
+            }
+
 
             showGreenPopup() {
                 console.log('🟢 SHOWING GREEN POPUP NOW!');
@@ -2127,28 +2461,95 @@
                 document.getElementById('popupContent').className = 'popup-content green';
                 document.getElementById('popupOverlay').style.display = 'flex';
 
-                // Force play green audio immediately - NO CONDITIONS
-                console.log('🟢 FORCING GREEN AUDIO PLAY');
-
-                // Try MP3 first
-                if (this.greenAudio) {
-                    this.greenAudio.pause();
-                    this.greenAudio.currentTime = 0;
-                    this.greenAudio.volume = 0.8;
-
-                    this.greenAudio.play()
-                        .then(() => console.log('✅ GREEN AUDIO SUCCESS'))
-                        .catch(() => {
-                            console.log('🔄 GREEN AUDIO FALLBACK');
-                            this.playVictorySound();
-                        });
-                } else {
-                    // Synthetic sound fallback
-                    this.playVictorySound();
-                }
+                // Simple audio playback
+                this.playGreenAudio();
 
                 // Auto-close
-                setTimeout(() => closePopup(), 12000);
+                setTimeout(() => closePopup(), 10000);
+            }
+
+            playGreenAudio() {
+                console.log('🟢 Playing random green popup sound');
+                
+                // Check if audio system is ready
+                if (!this.audioActivated) {
+                    console.warn('⚠️ Audio not yet activated by user interaction');
+                    return;
+                }
+                
+                if (this.greenAudios && this.greenAudios.length > 0) {
+                    // Filter only ready audio elements
+                    const readyAudios = this.greenAudios.filter(audio => 
+                        audio && audio.readyState >= 2 && !audio.error
+                    );
+                    
+                    if (readyAudios.length === 0) {
+                        console.warn('⚠️ No green audio files are ready to play yet');
+                        // Try to play the first available audio anyway as fallback
+                        const fallbackAudio = this.greenAudios.find(audio => audio && !audio.error);
+                        if (fallbackAudio) {
+                            this.attemptAudioPlay(fallbackAudio, 'GREEN FALLBACK');
+                        }
+                        return;
+                    }
+                    
+                    // Select a random ready green audio
+                    const randomIndex = Math.floor(Math.random() * readyAudios.length);
+                    const selectedAudio = readyAudios[randomIndex];
+                    const originalIndex = this.greenAudios.indexOf(selectedAudio);
+                    
+                    console.log(`🎲 Selected green sound ${originalIndex + 1}/${this.greenAudios.length} (ready: ${readyAudios.length})`);
+                    
+                    this.attemptAudioPlay(selectedAudio, `GREEN ${originalIndex + 1}`);
+                } else {
+                    console.warn('❌ No green audio elements found');
+                }
+            }
+
+            testGreenAudio() {
+                console.log('🧪 Testing random green audio');
+                this.playGreenAudio();
+            }
+
+            testRedAudio() {
+                console.log('🧪 Testing random red audio');
+                this.playRedAudio();
+            }
+
+            testSpecificGreen(index) {
+                console.log(`🧪 Testing specific green audio ${index + 1}`);
+                
+                if (this.greenAudios && this.greenAudios[index]) {
+                    const audio = this.greenAudios[index];
+                    audio.currentTime = 0;
+                    audio.play()
+                        .then(() => {
+                            console.log(`✅ Green audio ${index + 1} test successful`);
+                        })
+                        .catch(error => {
+                            console.warn(`⚠️ Green audio ${index + 1} test failed:`, error);
+                        });
+                } else {
+                    console.warn(`❌ Green audio ${index + 1} not found`);
+                }
+            }
+
+            testSpecificRed(index) {
+                console.log(`🧪 Testing specific red audio ${index + 1}`);
+                
+                if (this.redAudios && this.redAudios[index]) {
+                    const audio = this.redAudios[index];
+                    audio.currentTime = 0;
+                    audio.play()
+                        .then(() => {
+                            console.log(`✅ Red audio ${index + 1} test successful`);
+                        })
+                        .catch(error => {
+                            console.warn(`⚠️ Red audio ${index + 1} test failed:`, error);
+                        });
+                } else {
+                    console.warn(`❌ Red audio ${index + 1} not found`);
+                }
             }
         }
 
@@ -2156,36 +2557,52 @@
             document.getElementById('popupOverlay').style.display = 'none';
         }
 
+        function closeSoundImmersionPopup() {
+            // Clear the countdown interval
+            if (countdownInterval) {
+                clearInterval(countdownInterval);
+            }
+            document.getElementById('soundImmersionPopup').style.display = 'none';
+        }
+
+        // Gestion du compteur pour le popup d'immersion sonore
+        let countdownInterval;
+        let remainingTime = 20;
+
+        function startCountdown() {
+            const countdownElement = document.getElementById('countdownTimer');
+            
+            countdownInterval = setInterval(() => {
+                remainingTime--;
+                if (countdownElement) {
+                    countdownElement.textContent = remainingTime + 's';
+                    
+                    // Effet visuel quand le temps devient critique
+                    if (remainingTime <= 5) {
+                        countdownElement.style.background = 'rgba(255, 69, 0, 0.3)';
+                        countdownElement.style.borderColor = 'rgba(255, 69, 0, 0.6)';
+                        countdownElement.style.color = '#ff4500';
+                        countdownElement.style.animation = 'pulseIcon 0.5s ease-in-out infinite';
+                    }
+                }
+                
+                if (remainingTime <= 0) {
+                    clearInterval(countdownInterval);
+                    closeSoundImmersionPopup();
+                }
+            }, 1000);
+        }
+
         // Initialize the trading simulator when page loads
         document.addEventListener('DOMContentLoaded', () => {
             console.log('DOM loaded, initializing simulator...');
             window.simulator = new TradingSimulator();
+            
+            // Démarrer le compteur du popup d'immersion sonore
+            startCountdown();
         });
 
-        // Simple audio activation on user click
-        document.addEventListener('click', function() {
-            console.log('🔊 Audio activated by user click');
-
-            if (window.simulator) {
-                // Resume audio context
-                if (window.simulator.audioContext.state === 'suspended') {
-                    window.simulator.audioContext.resume();
-                }
-
-                // Enable audio elements
-                if (window.simulator.greenAudio) {
-                    window.simulator.greenAudio.muted = false;
-                    window.simulator.greenAudio.volume = 0.8;
-                }
-
-                if (window.simulator.redAudio) {
-                    window.simulator.redAudio.muted = false;
-                    window.simulator.redAudio.volume = 0.8;
-                }
-
-                console.log('✅ All audio systems ready');
-            }
-        }, { once: true });
+        // Audio activation is now handled within the TradingSimulator class
     </script>
 </body>
 </html>
