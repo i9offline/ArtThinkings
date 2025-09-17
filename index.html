@@ -358,14 +358,14 @@
         .buy-btn {
             background: linear-gradient(145deg, #26a69a, #1e8a7d);
             color: white;
-            border: 1px solid #2dbbae;
+            border: none;
             box-shadow: 0 0 20px rgba(38, 166, 154, 0.3);
         }
 
         .sell-btn {
             background: linear-gradient(145deg, #ef5350, #d32f2f);
             color: white;
-            border: 1px solid #f87171;
+            border: none;
             box-shadow: 0 0 20px rgba(239, 83, 80, 0.3);
         }
 
@@ -564,58 +564,136 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(3px);
             display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.4s ease-out;
         }
 
         .popup-content {
-            background: linear-gradient(145deg, #ff4757, #ff3838);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.5);
-            animation: slideIn 0.5s ease;
-            border: 3px solid #fff;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 249, 250, 0.85) 100%);
+            backdrop-filter: blur(20px);
+            color: #1a1a1a;
+            padding: 35px 40px;
+            border-radius: 12px;
+            text-align: left;
+            max-width: 450px;
+            min-width: 380px;
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, 0.3),
+                0 10px 25px rgba(0, 0, 0, 0.2),
+                0 0 0 2px rgba(255, 255, 255, 0.3);
+            animation: slideInScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            position: relative;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            transform: scale(1);
+        }
+
+        .popup-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #ff4757, #ff3742, #ff2a3a);
+            border-radius: 16px 16px 0 0;
         }
 
         .popup-content.green {
-            background: linear-gradient(145deg, #00ff88, #00cc6a);
-            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
+            background: linear-gradient(135deg, rgba(232, 245, 232, 0.85) 0%, rgba(240, 255, 240, 0.8) 100%);
+            border: 2px solid rgba(52, 199, 89, 0.4);
+            box-shadow:
+                0 25px 50px rgba(52, 199, 89, 0.2),
+                0 10px 25px rgba(52, 199, 89, 0.15),
+                0 0 0 2px rgba(52, 199, 89, 0.2);
+        }
+
+        .popup-content.green::before {
+            background: linear-gradient(90deg, #34c759, #30d158, #32d74b);
+        }
+
+        .popup-content.red {
+            background: linear-gradient(135deg, rgba(255, 232, 232, 0.85) 0%, rgba(255, 240, 240, 0.8) 100%);
+            border: 2px solid rgba(255, 71, 87, 0.4);
+            box-shadow:
+                0 25px 50px rgba(255, 71, 87, 0.2),
+                0 10px 25px rgba(255, 71, 87, 0.15),
+                0 0 0 2px rgba(255, 71, 87, 0.2);
+        }
+
+        .popup-content.red::before {
+            background: linear-gradient(90deg, #ff4757, #ff3742, #ff2a3a);
         }
 
         .popup-content h2 {
-            margin: 0 0 15px 0;
+            margin: 0 0 20px 0;
             font-size: 1.8rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-weight: 700;
+            color: #1a1a1a;
+            line-height: 1.2;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            letter-spacing: -0.3px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .popup-content p {
-            margin: 0 0 20px 0;
-            font-size: 1.2rem;
+            margin: 0 0 25px 0;
+            font-size: 1.1rem;
             line-height: 1.4;
+            color: #2a2a2a;
+            font-weight: 400;
+        }
+
+        .popup-content.green h2 {
+            color: #1b5e20;
+            text-shadow: 0 2px 4px rgba(52, 199, 89, 0.2);
+        }
+
+        .popup-content.green p {
+            color: #2e7d32;
+        }
+
+        .popup-content.red h2 {
+            color: #b71c1c;
+            text-shadow: 0 2px 4px rgba(255, 71, 87, 0.2);
+        }
+
+        .popup-content.red p {
+            color: #c62828;
         }
 
         .popup-button {
-            background: #fff;
-            color: #ff4757;
+            background: #007aff;
+            color: white;
             border: none;
-            padding: 12px 25px;
+            outline: none;
+            padding: 14px 28px;
             border-radius: 8px;
             font-size: 1rem;
-            font-weight: bold;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            letter-spacing: 0.2px;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+            display: block;
+            margin: 0 auto;
         }
 
         .popup-button:hover {
-            background: #f1f1f1;
-            transform: scale(1.05);
+            background: #0056cc;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.4);
+        }
+
+        .popup-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(0, 122, 255, 0.3);
         }
 
         @keyframes fadeIn {
@@ -623,9 +701,22 @@
             to { opacity: 1; }
         }
 
-        @keyframes slideIn {
-            from { transform: scale(0.7) translateY(-50px); opacity: 0; }
-            to { transform: scale(1) translateY(0); opacity: 1; }
+        @keyframes slideInScale {
+            0% {
+                transform: scale(0.8) translateY(-30px);
+                opacity: 0;
+                filter: blur(4px);
+            }
+            50% {
+                transform: scale(1.02) translateY(5px);
+                opacity: 0.9;
+                filter: blur(1px);
+            }
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+                filter: blur(0);
+            }
         }
 
         @media (max-width: 1024px) {
@@ -890,7 +981,6 @@
 
             <div class="leverage-panel">
                 <div class="leverage-section">
-                    <h3>🎯 Trading Panel</h3>
                     <div class="leverage-buttons">
                         <button class="leverage-btn" data-leverage="10">x10</button>
                         <button class="leverage-btn active" data-leverage="50">x50</button>
@@ -906,10 +996,6 @@
                     <div class="balance-item">
                         <span>Active Leverage:</span>
                         <span id="activeLeverage2">x50</span>
-                    </div>
-                    <div class="balance-item">
-                        <span>Margin Required:</span>
-                        <span id="marginRequired">$0.00</span>
                     </div>
                     <div class="balance-item">
                         <span>P&L:</span>
@@ -1104,6 +1190,10 @@
         <source src="green-popup-sound.mp3" type="audio/mpeg">
     </audio>
 
+    <audio id="redPopupAudio" preload="auto">
+        <source src="red-popup-sound.mp3" type="audio/mpeg">
+    </audio>
+
     <script>
         class TradingSimulator {
             constructor() {
@@ -1116,11 +1206,11 @@
                 this.volume = 0.5;
                 this.consecutiveRedCandles = 0;
                 this.consecutiveGreenCandles = 0;
-                this.redPopupShown = false;
-                this.greenPopupShown = false;
+                this.currentSyntheticSounds = [];
 
                 this.initializeElements();
                 this.setupEventListeners();
+                this.initializeAudio();
                 this.generateInitialHistory(); // Generate initial candlesticks
                 this.startPriceSimulation();
                 this.createAudioContext();
@@ -1139,7 +1229,6 @@
                 this.positionSizeDisplay = document.getElementById('positionSize2');
 
                 // Additional professional displays
-                this.marginRequiredDisplay = document.getElementById('marginRequired');
                 this.riskLevelDisplay = document.getElementById('riskLevel');
                 this.liquidationPriceDisplay = document.getElementById('liquidationPrice');
                 this.roeDisplay = document.getElementById('roe');
@@ -1158,6 +1247,68 @@
 
             createAudioContext() {
                 this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            initializeAudio() {
+                // Initialize green audio
+                this.greenAudio = document.getElementById('greenPopupAudio');
+                if (this.greenAudio) {
+                    this.greenAudio.volume = 0.7;
+                    console.log('🎵 Green audio element initialized');
+
+                    this.greenAudio.addEventListener('loadeddata', () => {
+                        console.log('✅ Green audio loaded successfully - ready to play');
+                    });
+
+                    this.greenAudio.addEventListener('canplay', () => {
+                        console.log('✅ Green audio can play');
+                    });
+
+                    this.greenAudio.addEventListener('error', (e) => {
+                        console.error('❌ Green audio error during load:', e);
+                    });
+                } else {
+                    console.error('❌ Green audio element not found!');
+                }
+
+                // Initialize red audio
+                this.redAudio = document.getElementById('redPopupAudio');
+                if (this.redAudio) {
+                    this.redAudio.volume = 1.0; // Maximum volume for red audio
+                    console.log('🔴 Red audio element initialized');
+
+                    this.redAudio.addEventListener('loadeddata', () => {
+                        console.log('✅ Red audio loaded successfully - ready to play');
+                    });
+
+                    this.redAudio.addEventListener('canplay', () => {
+                        console.log('✅ Red audio can play');
+                    });
+
+                    this.redAudio.addEventListener('error', (e) => {
+                        console.error('❌ Red audio error during load:', e);
+                    });
+                } else {
+                    console.error('❌ Red audio element not found!');
+                }
+            }
+
+            testAudio() {
+                console.log('🧪 Testing audio functionality...');
+                if (this.greenAudio) {
+                    this.greenAudio.currentTime = 0;
+                    this.greenAudio.play()
+                        .then(() => {
+                            console.log('✅ TEST: Audio works perfectly!');
+                            setTimeout(() => {
+                                this.greenAudio.pause();
+                                this.greenAudio.currentTime = 0;
+                            }, 1000);
+                        })
+                        .catch(e => {
+                            console.error('❌ TEST: Audio failed:', e);
+                        });
+                }
             }
 
             generateInitialHistory() {
@@ -1223,9 +1374,6 @@
                 // Set current price to last candle's close
                 this.currentPrice = price;
 
-                console.log(`Generated ${this.priceHistory.length} OHLC candles`);
-                console.log('Current price:', this.currentPrice);
-
                 // Wait for DOM to be ready, then update
                 setTimeout(() => {
                     this.updatePriceDisplay();
@@ -1248,6 +1396,82 @@
 
                 gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
                 gainNode.gain.linearRampToValueAtTime(this.volume * 0.1, this.audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + duration);
+            }
+
+            playVictorySound() {
+                if (this.volume === 0) return;
+
+                // Stop any current synthetic sounds
+                this.stopAllSyntheticSounds();
+
+                // Play a victory chord progression
+                const notes = [
+                    { freq: 523, time: 0, duration: 0.3 },    // C5
+                    { freq: 659, time: 0.1, duration: 0.3 },  // E5
+                    { freq: 784, time: 0.2, duration: 0.4 },  // G5
+                    { freq: 1047, time: 0.3, duration: 0.5 }  // C6
+                ];
+
+                this.currentSyntheticSounds = [];
+                notes.forEach(note => {
+                    const timeoutId = setTimeout(() => {
+                        this.playSound(note.freq, note.duration, 'triangle');
+                    }, note.time * 1000);
+                    this.currentSyntheticSounds.push(timeoutId);
+                });
+            }
+
+            playFailureSound() {
+                if (this.volume === 0) return;
+
+                // Stop any current synthetic sounds
+                this.stopAllSyntheticSounds();
+
+                // Play a dramatic failure sound progression - louder than victory
+                const notes = [
+                    { freq: 440, time: 0, duration: 0.2 },    // A4
+                    { freq: 392, time: 0.1, duration: 0.2 },  // G4
+                    { freq: 349, time: 0.2, duration: 0.3 },  // F4
+                    { freq: 294, time: 0.3, duration: 0.4 },  // D4
+                    { freq: 220, time: 0.4, duration: 0.5 }   // A3 (low)
+                ];
+
+                this.currentSyntheticSounds = [];
+                notes.forEach(note => {
+                    const timeoutId = setTimeout(() => {
+                        this.playLouderSound(note.freq, note.duration, 'sawtooth');
+                    }, note.time * 1000);
+                    this.currentSyntheticSounds.push(timeoutId);
+                });
+            }
+
+            stopAllSyntheticSounds() {
+                if (this.currentSyntheticSounds) {
+                    this.currentSyntheticSounds.forEach(timeoutId => {
+                        clearTimeout(timeoutId);
+                    });
+                    this.currentSyntheticSounds = [];
+                }
+            }
+
+            playLouderSound(frequency, duration, type = 'sine') {
+                if (this.volume === 0) return;
+
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                oscillator.type = type;
+
+                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(this.volume * 0.2, this.audioContext.currentTime + 0.01); // Double volume
                 gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
 
                 oscillator.start(this.audioContext.currentTime);
@@ -1324,12 +1548,10 @@
                             if (direction === 'down') {
                                 this.consecutiveRedCandles++;
                                 this.consecutiveGreenCandles = 0;
-                                this.greenPopupShown = false; // Reset green popup when trend changes
                                 console.log('Red candle completed. Consecutive red:', this.consecutiveRedCandles);
                             } else {
                                 this.consecutiveGreenCandles++;
                                 this.consecutiveRedCandles = 0;
-                                this.redPopupShown = false; // Reset red popup when trend changes
                                 console.log('Green candle completed. Consecutive green:', this.consecutiveGreenCandles);
                             }
                         }
@@ -1372,18 +1594,19 @@
                     this.updatePriceDisplay();
                     this.updateChart();
                     this.updatePnL();
+                    this.updatePositionDisplay();
                     this.updateTechnicalIndicators();
                     this.checkForPopup();
 
-                    // Play sounds for significant price movements
-                    const priceChangePercent = Math.abs((this.currentPrice - oldPrice) / oldPrice) * 100;
-                    if (priceChangePercent > 0.08) {
-                        if (this.currentPrice > oldPrice) {
-                            this.playSound(660, 0.1, 'sine'); // Up sound
-                        } else {
-                            this.playSound(440, 0.1, 'sine'); // Down sound
-                        }
-                    }
+                    // Play sounds for significant price movements - DISABLED
+                    // const priceChangePercent = Math.abs((this.currentPrice - oldPrice) / oldPrice) * 100;
+                    // if (priceChangePercent > 0.08) {
+                    //     if (this.currentPrice > oldPrice) {
+                    //         this.playSound(660, 0.1, 'sine'); // Up sound
+                    //     } else {
+                    //         this.playSound(440, 0.1, 'sine'); // Down sound
+                    //     }
+                    // }
 
                 }, 200); // Update every 0.5 seconds for faster candle formation
             }
@@ -1401,7 +1624,6 @@
             }
 
             updateChart() {
-                console.log('updateChart called');
 
                 // Clear existing elements
                 this.chart.innerHTML = '';
@@ -1430,7 +1652,6 @@
                 const volumeScale = document.getElementById('volumeScale');
                 if (volumeChart) volumeChart.innerHTML = '';
                 if (volumeScale) volumeScale.innerHTML = '';
-                console.log('Chart dimensions:', chartWidth, 'x', chartHeight);
 
                 // Show last 30 candles for better visibility
                 const recent = candlesToShow.slice(-30);
@@ -1653,8 +1874,6 @@
                         }
                     }
                 }
-
-                console.log('Chart updated with', recent.length, 'realistic candlesticks and volume bars');
             }
 
             updatePnL() {
@@ -1714,14 +1933,6 @@
             }
 
             updateLeverageDetails() {
-                // Calculate margin required for current position
-                if (this.position) {
-                    const marginRequired = (this.position.size * this.currentPrice) / this.leverage;
-                    this.marginRequiredDisplay.textContent = `$${marginRequired.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-                } else {
-                    this.marginRequiredDisplay.textContent = '$0.00';
-                }
-
                 // Update risk level based on leverage
                 if (this.leverage <= 10) {
                     this.riskLevelDisplay.textContent = 'LOW';
@@ -1859,17 +2070,17 @@
 
             checkForPopup() {
                 // Show red popup after 2 consecutive red candles
-                if (this.consecutiveRedCandles >= 2 && !this.redPopupShown) {
+                if (this.consecutiveRedCandles >= 2) {
                     console.log('Showing red popup - consecutive red:', this.consecutiveRedCandles);
-                    this.redPopupShown = true;
                     this.showRedPopup();
+                    this.consecutiveRedCandles = 0; // Reset to avoid spam
                 }
 
                 // Show green popup after 2 consecutive green candles
-                if (this.consecutiveGreenCandles >= 2 && !this.greenPopupShown) {
+                if (this.consecutiveGreenCandles >= 2) {
                     console.log('Showing green popup - consecutive green:', this.consecutiveGreenCandles);
-                    this.greenPopupShown = true;
                     this.showGreenPopup();
+                    this.consecutiveGreenCandles = 0; // Reset to avoid spam
                 }
 
                 // Debug logging for consecutive candles
@@ -1884,14 +2095,14 @@
             showRedPopup() {
                 console.log('showRedPopup called');
                 const messages = [
-                    { title: "😰 Going Limp & Soft", message: "Your position is shrinking fast! This bear market is making everything go flaccid... 📉💔" },
-                    { title: "💸 Premature Liquidation", message: "Oops! You finished too early! Your position got liquidated before reaching satisfaction. Try lasting longer next time!" },
-                    { title: "🔴 Bleeding Out Hard", message: "The market is bleeding heavily! This red candle penetration is hurting everyone's portfolios! 🩸" },
-                    { title: "📉 Can't Get It Up", message: "Price can't seem to get hard anymore... Bulls lost their stamina. Performance anxiety in the market! 😞" },
-                    { title: "💔 Dumped & Disappointed", message: "Just got pump and dumped! Left unsatisfied as whales pulled out too quickly and ruined the party!" },
-                    { title: "🥶 Cold & Wet Market", message: "Market sentiment is cold and wet with fear! Bears are dominating and nobody's getting excited anymore..." },
-                    { title: "😢 Small Position Shame", message: "Your position is so small now... Everyone's pointing and laughing at these tiny gains turned losses!" },
-                    { title: "🔻 Penetrated From Behind", message: "Bears penetrated your support from behind! Didn't see that aggressive selling pressure coming! 🐻" }
+                    { title: "📉 Bloomberg Terminal Alert", message: "Consecutive bearish candles detected. Your portfolio is bleeding red faster than a Reuters breaking news banner. Even the Wall Street Journal would call this 'concerning.'" },
+                    { title: "⚠️ CNBC Breaking News", message: "Technical indicators suggest the bulls have lost their stamina. This downturn is getting more coverage than a New York Times front page scandal." },
+                    { title: "🔴 Financial Times Warning", message: "Your position is shrinking faster than credibility at a Fox Business debate. Time to review your exit strategy before MarketWatch notices." },
+                    { title: "📊 Bloomberg Markets Alert", message: "The market is displaying more red flags than a Communist parade. Even Bloomberg TV anchors are looking concerned during commercial breaks." },
+                    { title: "💸 Reuters Flash Update", message: "Whales have pulled out faster than CNBC hosts changing their predictions. Your unrealized gains just made headlines in the Financial Times." },
+                    { title: "🐻 WSJ Market Analysis", message: "Current sentiment is colder than a Bloomberg terminal in a power outage. The New York Times business section would describe this as 'challenging market conditions.'" },
+                    { title: "📈 Yahoo Finance Alert", message: "What goes up must come down, and it's falling faster than a CNBC stock picker's reputation. Even Fortune magazine couldn't spin this positively." },
+                    { title: "⛔ MarketWatch Breaking", message: "Key support levels breached with the precision of a Wall Street Journal investigation. This story is trending faster than a Bloomberg scoop." }
                 ];
 
                 const randomMessage = messages[Math.floor(Math.random() * messages.length)];
@@ -1900,11 +2111,34 @@
                 const popupOverlay = document.getElementById('popupOverlay');
 
                 if (popupContent && popupOverlay) {
-                    popupContent.className = 'popup-content'; // Remove green class
+                    popupContent.className = 'popup-content red'; // Apply red class
 
                     document.getElementById('popupTitle').textContent = randomMessage.title;
                     document.getElementById('popupMessage').textContent = randomMessage.message;
                     popupOverlay.style.display = 'flex';
+
+                    // Play red popup audio
+                    console.log('🔴 Attempting to play red popup sound...');
+
+                    if (this.redAudio) {
+                        // Force stop any current playback and reset
+                        this.redAudio.pause();
+                        this.redAudio.currentTime = 0;
+                        this.redAudio.volume = this.volume * 1.0; // 100% volume
+
+                        this.redAudio.play()
+                            .then(() => {
+                                console.log('✅ Red MP3 audio playing successfully!');
+                            })
+                            .catch(error => {
+                                console.log('❌ Red MP3 failed, using synthetic sound:', error.name);
+                                this.playFailureSound();
+                            });
+                    } else {
+                        console.log('🔄 Red MP3 not available, using synthetic failure sound');
+                        this.playFailureSound();
+                    }
+
                     console.log('Red popup displayed');
 
                     // Auto-close popup after 8 seconds
@@ -1919,14 +2153,14 @@
             showGreenPopup() {
                 console.log('showGreenPopup called');
                 const messages = [
-                    { title: "🚀 Massive Pump Alert!", message: "Your position is getting bigger and harder to ignore! This bull run feels so good! 💦📈" },
-                    { title: "💎 Long & Hard Rally", message: "This uptrend is lasting longer than expected... Keep riding it until climax at $69,420!" },
-                    { title: "🔥 Hot Liquidity Injection", message: "Whales are injecting massive liquidity! The market is so wet with money right now! 💦💰" },
-                    { title: "📈 Penetrating Resistance", message: "We're penetrating through every resistance level! Nothing can stop this explosive growth!" },
-                    { title: "💥 Explosive Volume Surge", message: "Volume is exploding everywhere! The market is climaxing with this incredible performance!" },
-                    { title: "🍆 Big Green Candle", message: "Look at that massive green candle! It's so thick and long, making everyone satisfied! 🕯️💚" },
-                    { title: "💦 Liquidating Shorts", message: "Short sellers getting liquidated hard! This pump is making them wet their pants with losses!" },
-                    { title: "🥵 Market Getting Hot", message: "Temperature rising! Bulls are getting sweaty from this intense action. Don't pull out now!" }
+                    { title: "🚀 Bloomberg Terminal Surge", message: "Consecutive green candles detected! Your portfolio is performing better than Jim Cramer's predictions. This rally is getting more attention than a New York Times exposé." },
+                    { title: "💎 Financial Times Bullish", message: "This uptrend is lasting longer than most CNBC host predictions. Even the Wall Street Journal's skeptical editors are impressed by this momentum." },
+                    { title: "🔥 Reuters Market Flash", message: "Institutional money is flowing faster than Bloomberg News breaking stories. MarketWatch is calling this 'exceptional liquidity conditions' in their headlines." },
+                    { title: "📈 WSJ Breaking Surge", message: "Price action is slicing through resistance with the precision of a Financial Times investigation. This story is trending on every Yahoo Finance feed." },
+                    { title: "💥 CNBC Power Hour", message: "Trading volume is exploding with more enthusiasm than a Bloomberg TV exclusive interview. Fortune magazine would feature this rally on their cover." },
+                    { title: "🌟 MarketWatch Featured", message: "Your positions are growing faster than Fox Business viewership during market hours. Even the New York Times business section is taking notes." },
+                    { title: "💰 Bloomberg Scoop Alert", message: "Bears are capitulating faster than CNBC analysts changing their ratings. This short squeeze is making Reuters headlines worldwide." },
+                    { title: "🔥 Financial Media Frenzy", message: "Market euphoria is heating up like a Wall Street Journal auction room. Bloomberg Terminal users are refreshing their screens in disbelief." }
                 ];
 
                 const randomMessage = messages[Math.floor(Math.random() * messages.length)];
@@ -1942,45 +2176,26 @@
                     document.getElementById('popupMessage').textContent = randomMessage.message;
                     popupOverlay.style.display = 'flex';
 
-                    // Play the MP3 audio with volume control and duration limit
-                    if (audio) {
-                        console.log('Audio element found, attempting to play...');
-                        console.log('Current volume setting:', this.volume);
+                    // Try MP3 audio first, then fallback to synthetic sound
+                    console.log('🎵 Attempting to play green popup sound...');
 
-                        audio.volume = this.volume * 0.7; // Use the app's volume setting (70% of main volume)
-                        console.log('Audio volume set to:', audio.volume);
+                    if (this.greenAudio) {
+                        // Force stop any current playback and reset
+                        this.greenAudio.pause();
+                        this.greenAudio.currentTime = 0;
+                        this.greenAudio.volume = this.volume * 0.7;
 
-                        // Wait for audio to load before setting currentTime
-                        const playAudio = () => {
-                            audio.currentTime = 20; // Start from 20 seconds into the file
-                            console.log('Audio currentTime set to:', audio.currentTime);
-
-                            audio.play().then(() => {
-                                console.log('Audio started playing successfully');
-                            }).catch(e => {
-                                console.error('Audio play failed:', e);
-                                // Try playing from beginning if 20s fails
-                                audio.currentTime = 0;
-                                audio.play().catch(e2 => console.error('Audio play from start also failed:', e2));
+                        this.greenAudio.play()
+                            .then(() => {
+                                console.log('✅ Green MP3 audio playing successfully!');
+                            })
+                            .catch(error => {
+                                console.log('❌ Green MP3 failed, using synthetic sound:', error.name);
+                                this.playVictorySound();
                             });
-
-                            // Stop audio after 5 seconds
-                            setTimeout(() => {
-                                console.log('Stopping audio after 5 seconds');
-                                audio.pause();
-                                audio.currentTime = 20; // Reset to 20 seconds for next time
-                            }, 5000);
-                        };
-
-                        if (audio.readyState >= 2) { // HAVE_CURRENT_DATA or higher
-                            playAudio();
-                        } else {
-                            console.log('Audio not ready, waiting for loadeddata event');
-                            audio.addEventListener('loadeddata', playAudio, { once: true });
-                            audio.load(); // Force load
-                        }
                     } else {
-                        console.error('Audio element not found!');
+                        console.log('🔄 Green MP3 not available, using synthetic victory sound');
+                        this.playVictorySound();
                     }
 
                     console.log('Green popup displayed');
@@ -2007,9 +2222,37 @@
 
         // Handle audio context user interaction requirement
         document.addEventListener('click', function initAudio() {
+            console.log('🔊 User interaction detected - enabling audio...');
+
             if (window.simulator && window.simulator.audioContext.state === 'suspended') {
-                window.simulator.audioContext.resume();
+                window.simulator.audioContext.resume().then(() => {
+                    console.log('✅ Audio context resumed');
+                });
             }
+
+            // Enable HTML5 audio playback
+            const greenAudio = document.getElementById('greenPopupAudio');
+            const redAudio = document.getElementById('redPopupAudio');
+
+            if (greenAudio) {
+                greenAudio.muted = false;
+                greenAudio.volume = 0.7;
+                console.log('✅ Green HTML5 audio enabled');
+            }
+
+            if (redAudio) {
+                redAudio.muted = false;
+                redAudio.volume = 1.0; // Maximum volume for red audio
+                console.log('✅ Red HTML5 audio enabled');
+            }
+
+            // Test audio immediately
+            setTimeout(() => {
+                if (window.simulator) {
+                    window.simulator.testAudio();
+                }
+            }, 500);
+
             document.removeEventListener('click', initAudio);
         }, { once: true });
     </script>
