@@ -1,0 +1,2017 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradHub - Trading Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
+            background: #000000;
+            color: #d1d4dc;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0;
+            padding: 15px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .logo {
+            display: inline-block;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            font-size: 3rem;
+            color: #ff8c00;
+            letter-spacing: -2px;
+        }
+
+        .logo-trade {
+            background: #ff8c00;
+            color: #000000;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-right: 2px;
+        }
+
+        .logo-hub {
+            background: #000000;
+            color: #ff8c00;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 2px solid #ff8c00;
+        }
+
+        .trading-interface {
+            display: grid;
+            grid-template-columns: 5fr 280px;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .chart-container {
+            background: #000000;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #2a2e39;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #2a2e39;
+        }
+
+        .price-display {
+            font-size: 1.8rem;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .price-change {
+            font-size: 1.2rem;
+            margin-left: 15px;
+        }
+
+        .price-up {
+            color: #26a69a;
+        }
+
+        .price-down {
+            color: #ef5350;
+        }
+
+        .chart-wrapper {
+            display: flex;
+            height: 600px;
+            border: 1px solid #2a2e39;
+            border-radius: 4px;
+            background: #000000;
+            overflow: hidden;
+            width: 100%;
+            flex-direction: column;
+        }
+
+        .main-chart {
+            flex: 1;
+            display: flex;
+            height: 500px;
+        }
+
+        .volume-chart {
+            height: 100px;
+            background: #000000;
+            border-top: 1px solid #2a2e39;
+            position: relative;
+            display: flex;
+        }
+
+        .volume-bar {
+            position: absolute;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(100, 149, 237, 0.3), rgba(100, 149, 237, 0.6));
+            border: 1px solid rgba(100, 149, 237, 0.5);
+            border-radius: 1px 1px 0 0;
+            transition: all 0.2s ease;
+        }
+
+        .volume-bar:hover {
+            background: linear-gradient(to top, rgba(100, 149, 237, 0.5), rgba(100, 149, 237, 0.8));
+            transform: scaleY(1.1);
+        }
+
+        .chart {
+            flex: 1;
+            height: 500px;
+            width: calc(100% - 60px);
+            position: relative;
+            overflow: hidden;
+            background: #000000;
+            background-image:
+                linear-gradient(rgba(42, 46, 57, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(42, 46, 57, 0.3) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .volume-chart-container {
+            width: calc(100% - 60px);
+            height: 100px;
+            position: relative;
+            background: #000000;
+        }
+
+        .volume-scale {
+            width: 60px;
+            height: 100px;
+            background: #1e222d;
+            border-left: 1px solid #2a2e39;
+            position: relative;
+            font-size: 9px;
+            color: #787b86;
+        }
+
+        .price-scale {
+            width: 60px;
+            height: 100%;
+            background: #000000;
+            border-left: 1px solid #2a2e39;
+            position: relative;
+            font-size: 11px;
+            color: #787b86;
+        }
+
+        .price-label {
+            position: absolute;
+            right: 8px;
+            transform: translateY(-50%);
+            white-space: nowrap;
+            font-family: 'Courier New', monospace;
+        }
+
+        .time-axis {
+            height: 30px;
+            background: #000000;
+            border: 1px solid #2a2e39;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+        }
+
+        .time-label {
+            position: absolute;
+            font-size: 11px;
+            color: #787b86;
+            font-family: 'Courier New', monospace;
+            transform: translateX(-50%);
+            white-space: nowrap;
+        }
+
+        .trading-panel {
+            background: #1e222d;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #2a2e39;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .right-panels {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .leverage-panel {
+            background: linear-gradient(145deg, #000000, #0a0a0a);
+            border-radius: 12px;
+            padding: 24px;
+            border: 1px solid #2a2e39;
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            height: fit-content;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        .leverage-panel .leverage-section {
+            margin-bottom: 0;
+        }
+
+        .leverage-section {
+            margin-bottom: 30px;
+        }
+
+        .leverage-section h3 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #ff8c00;
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+            letter-spacing: 1px;
+        }
+
+        .leverage-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .leverage-btn {
+            padding: 10px 14px;
+            border: 1px solid #404859;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, #2a2e39, #232732);
+            color: #d1d4dc;
+            min-width: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .leverage-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .leverage-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            border-color: #ff8c00;
+            background: linear-gradient(145deg, #2f3441, #272b37);
+        }
+
+        .leverage-btn:hover::before {
+            left: 100%;
+        }
+
+        .leverage-btn.active {
+            background: linear-gradient(145deg, #ff8c00, #ff7700);
+            color: #000;
+            border-color: #ffb347;
+            box-shadow:
+                0 0 20px rgba(255, 140, 0, 0.5),
+                0 4px 15px rgba(0, 0, 0, 0.3);
+            transform: scale(1.05);
+            font-weight: 700;
+        }
+
+        .leverage-btn.active::before {
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        }
+
+        .trade-controls {
+            margin-bottom: 20px;
+        }
+
+        .trade-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .trade-btn {
+            flex: 1;
+            padding: 16px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .trade-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .buy-btn {
+            background: linear-gradient(145deg, #26a69a, #1e8a7d);
+            color: white;
+            border: 1px solid #2dbbae;
+            box-shadow: 0 0 20px rgba(38, 166, 154, 0.3);
+        }
+
+        .sell-btn {
+            background: linear-gradient(145deg, #ef5350, #d32f2f);
+            color: white;
+            border: 1px solid #f87171;
+            box-shadow: 0 0 20px rgba(239, 83, 80, 0.3);
+        }
+
+        .trade-btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .trade-btn:hover::before {
+            left: 100%;
+        }
+
+        .buy-btn:hover {
+            box-shadow: 0 0 30px rgba(38, 166, 154, 0.6), 0 8px 25px rgba(0,0,0,0.4);
+            background: linear-gradient(145deg, #2dbbae, #26a69a);
+        }
+
+        .sell-btn:hover {
+            box-shadow: 0 0 30px rgba(239, 83, 80, 0.6), 0 8px 25px rgba(0,0,0,0.4);
+            background: linear-gradient(145deg, #f87171, #ef5350);
+        }
+
+        .trade-btn:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .balance-info {
+            background: linear-gradient(145deg, #000000, #0a0a0a);
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #404859;
+            box-shadow:
+                0 2px 15px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 0;
+            font-weight: 500;
+        }
+
+        .balance-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .balance-item span:first-child {
+            color: #9ca3af;
+            font-size: 0.9rem;
+        }
+
+        .balance-item span:last-child {
+            color: #ffffff;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+        }
+
+        .position-info {
+            background: linear-gradient(145deg, #000000, #0a0a0a);
+            padding: 18px;
+            border-radius: 10px;
+            border: 1px solid #404859;
+            box-shadow:
+                0 2px 15px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .position-info h4 {
+            color: #ff8c00;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            text-shadow: 0 0 8px rgba(255, 140, 0, 0.3);
+        }
+
+        .indicators-panel {
+            background: linear-gradient(145deg, #000000, #0a0a0a);
+            padding: 18px;
+            border-radius: 10px;
+            border: 1px solid #404859;
+            box-shadow:
+                0 2px 15px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        .indicators-panel h4 {
+            color: #ff8c00;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-align: center;
+            text-shadow: 0 0 8px rgba(255, 140, 0, 0.3);
+        }
+
+
+        .candlestick-body {
+            position: absolute;
+            transition: all 0.15s ease;
+            border-radius: 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .candlestick-body.bullish {
+            background: #000000;
+            border: 2px solid #00c896;
+            box-shadow:
+                0 0 0 1px rgba(0, 200, 150, 0.3),
+                0 2px 8px rgba(0, 200, 150, 0.2),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .candlestick-body.bearish {
+            background: linear-gradient(180deg, #ff4757 0%, #ff3742 50%, #ff2a3a 100%);
+            border: 1px solid #ff6b7a;
+            box-shadow: 
+                0 0 0 1px rgba(255, 71, 87, 0.4),
+                0 3px 12px rgba(255, 71, 87, 0.3),
+                inset 0 1px 0 rgba(255,255,255,0.2),
+                inset 0 -1px 0 rgba(0,0,0,0.2);
+        }
+
+        .candlestick-wick {
+            position: absolute;
+            background: linear-gradient(to bottom, #8b949e 0%, #6e7681 50%, #21262d 100%);
+            border-radius: 0;
+            box-shadow: 
+                0 0 1px rgba(0,0,0,0.8),
+                0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .candlestick-body.doji {
+            background: #21262d;
+            border: 1px solid #8b949e;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .current-price-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #ffeb3b, #ff9800, #ffeb3b);
+            box-shadow: 0 0 10px #ffeb3b;
+            animation: pulseLine 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulseLine {
+            0%, 100% { opacity: 0.7; box-shadow: 0 0 10px #ffeb3b; }
+            50% { opacity: 1; box-shadow: 0 0 15px #ffeb3b, 0 0 25px #ff9800; }
+        }
+
+
+        .ad-banner {
+            background: linear-gradient(45deg, #ff8c00, #ff6b00);
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .ad-banner:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 20px rgba(255, 140, 0, 0.5);
+        }
+
+        .ad-banner h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .ad-banner p {
+            margin: 5px 0 0 0;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3); }
+            50% { box-shadow: 0 6px 25px rgba(255, 140, 0, 0.6); }
+            100% { box-shadow: 0 4px 15px rgba(255, 140, 0, 0.3); }
+        }
+
+        .popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .popup-content {
+            background: linear-gradient(145deg, #ff4757, #ff3838);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.5);
+            animation: slideIn 0.5s ease;
+            border: 3px solid #fff;
+        }
+
+        .popup-content.green {
+            background: linear-gradient(145deg, #00ff88, #00cc6a);
+            box-shadow: 0 10px 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .popup-content h2 {
+            margin: 0 0 15px 0;
+            font-size: 1.8rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .popup-content p {
+            margin: 0 0 20px 0;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .popup-button {
+            background: #fff;
+            color: #ff4757;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .popup-button:hover {
+            background: #f1f1f1;
+            transform: scale(1.05);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: scale(0.7) translateY(-50px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 1024px) {
+            .trading-interface {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .trading-interface {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .leverage-buttons {
+                flex-direction: column;
+            }
+
+            .trade-buttons {
+                flex-direction: column;
+            }
+
+            .table-header {
+                display: none;
+            }
+
+            .table-row {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                padding: 12px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .global-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+        }
+
+        .market-overview {
+            background: #000000;
+            padding: 20px 0;
+            margin-top: 20px;
+            border-top: 1px solid rgba(42, 46, 57, 0.3);
+        }
+
+        .market-table {
+            background: #000000;
+            border: 1px solid #2a2e39;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.2fr 1.2fr 1.2fr;
+            padding: 8px 16px;
+            background: #000000;
+            font-size: 11px;
+            color: #787b86;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #2a2e39;
+        }
+
+        .table-row {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.2fr 1.2fr 1.2fr;
+            padding: 12px 16px;
+            font-size: 13px;
+            border-bottom: 1px solid rgba(42, 46, 57, 0.3);
+            transition: background-color 0.1s ease;
+        }
+
+        .table-row:hover {
+            background: rgba(42, 46, 57, 0.2);
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .col-symbol {
+            font-weight: 600;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .col-price {
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+
+        .col-change {
+            font-family: 'Courier New', monospace;
+            font-weight: 500;
+        }
+
+        .col-volume, .col-market-cap {
+            color: #d1d4dc;
+            font-size: 12px;
+        }
+
+        .market-stats {
+            background: #000000;
+            border: 1px solid #2a2e39;
+            border-radius: 4px;
+            padding: 16px;
+        }
+
+        .stats-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(42, 46, 57, 0.3);
+        }
+
+        .global-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .global-label {
+            font-size: 13px;
+            color: #787b86;
+            font-weight: 500;
+        }
+
+        .global-value {
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .global-change {
+            font-size: 13px;
+            font-weight: 500;
+            font-family: 'Courier New', monospace;
+        }
+
+        .update-time {
+            font-size: 11px;
+            color: #787b86;
+            font-family: 'Courier New', monospace;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #787b86;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            font-family: 'Courier New', monospace;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            font-weight: 500;
+            font-family: 'Courier New', monospace;
+        }
+
+        .stat-change.positive {
+            color: #26a69a;
+        }
+
+        .stat-change.negative {
+            color: #ef5350;
+        }
+
+        .stat-neutral {
+            font-size: 11px;
+            color: #787b86;
+            font-weight: 400;
+        }
+
+        .stat-sentiment {
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .stat-sentiment.fear {
+            color: #ef5350;
+        }
+
+        .stat-sentiment.greed {
+            color: #26a69a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <span class="logo-trade">Trade</span><span class="logo-hub">Hub</span>
+            </div>
+        </div>
+
+        <div class="ad-banner" onclick="alert('🔥 Hot singles in your area want to trade with you! 💰')">
+            <h3>🔥 FIND HOT STOCKS JUST 10KM AWAY! 🔥</h3>
+            <p>Click here to meet hot local stocks ready to pump and dump! 💦📈</p>
+        </div>
+        <div class="trading-interface">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <div>
+                        <span class="price-display" id="currentPrice">$1000.00</span>
+                        <span class="price-change" id="priceChange">+0.00 (0.00%)</span>
+                    </div>
+                    <div>
+                        <strong>BTC/USD</strong>
+                    </div>
+                </div>
+                <div class="chart-wrapper">
+                    <div class="main-chart">
+                        <div class="chart" id="chart">
+                        </div>
+                        <div class="price-scale" id="priceScale"></div>
+                    </div>
+                    <div class="volume-chart">
+                        <div class="volume-chart-container" id="volumeChart"></div>
+                        <div class="volume-scale" id="volumeScale"></div>
+                    </div>
+                </div>
+                <div class="time-axis" id="timeAxis"></div>
+            </div>
+
+            <div class="leverage-panel">
+                <div class="leverage-section">
+                    <h3>🎯 Trading Panel</h3>
+                    <div class="leverage-buttons">
+                        <button class="leverage-btn" data-leverage="10">x10</button>
+                        <button class="leverage-btn active" data-leverage="50">x50</button>
+                        <button class="leverage-btn" data-leverage="100">x100</button>
+                    </div>
+                </div>
+
+                <div class="balance-info" style="margin-top: 20px;">
+                    <div class="balance-item">
+                        <span>Balance:</span>
+                        <span id="balance2">$10,000.00</span>
+                    </div>
+                    <div class="balance-item">
+                        <span>Active Leverage:</span>
+                        <span id="activeLeverage2">x50</span>
+                    </div>
+                    <div class="balance-item">
+                        <span>Margin Required:</span>
+                        <span id="marginRequired">$0.00</span>
+                    </div>
+                    <div class="balance-item">
+                        <span>P&L:</span>
+                        <span id="pnl2">$0.00</span>
+                    </div>
+                    <div class="balance-item">
+                        <span>Risk Level:</span>
+                        <span id="riskLevel" style="color: #26a69a;">LOW</span>
+                    </div>
+                </div>
+
+                <div class="position-info" style="margin-top: 20px;">
+                    <h4>Current Position</h4>
+                    <div class="balance-item">
+                        <span>Type:</span>
+                        <span id="positionType2">None</span>
+                    </div>
+                    <div class="balance-item">
+                        <span>Entry Price:</span>
+                        <span id="entryPrice2">-</span>
+                    </div>
+                    <div class="balance-item">
+                        <span>Size:</span>
+                        <span id="positionSize2">0</span>
+                    </div>
+                    <div class="balance-item">
+                        <span>Liquidation Price:</span>
+                        <span id="liquidationPrice">-</span>
+                    </div>
+                    <div class="balance-item">
+                        <span>ROE:</span>
+                        <span id="roe">0.00%</span>
+                    </div>
+                </div>
+
+
+                <div class="trade-controls" style="margin-top: 20px;">
+                    <div class="trade-buttons">
+                        <button class="trade-btn buy-btn" id="buyBtn2">📈 BUY LONG</button>
+                        <button class="trade-btn sell-btn" id="sellBtn2">📉 SELL SHORT</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="indicators-panel" style="margin: 20px 15px;">
+            <h4>📊 Technical Indicators</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div class="balance-item">
+                    <span>RSI (14):</span>
+                    <span id="rsiValue" style="color: #ff8c00;">50.0</span>
+                </div>
+                <div class="balance-item">
+                    <span>MACD:</span>
+                    <span id="macdValue" style="color: #26a69a;">0.00</span>
+                </div>
+                <div class="balance-item">
+                    <span>MA20:</span>
+                    <span id="ma20Value" style="color: #2196f3;">$1000.00</span>
+                </div>
+                <div class="balance-item">
+                    <span>MA50:</span>
+                    <span id="ma50Value" style="color: #9c27b0;">$1000.00</span>
+                </div>
+                <div class="balance-item">
+                    <span>Bollinger Band:</span>
+                    <span id="bbValue" style="color: #607d8b;">MIDDLE</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="market-overview">
+            <div class="container">
+                <!-- Market Data Table -->
+                <div class="market-table">
+                    <div class="table-header">
+                        <span class="col-symbol">Symbol</span>
+                        <span class="col-price">Last Price</span>
+                        <span class="col-change">24h Change</span>
+                        <span class="col-volume">24h Volume</span>
+                        <span class="col-market-cap">Market Cap</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="col-symbol">BTC/USDT</span>
+                        <span class="col-price">67,234.50</span>
+                        <span class="col-change positive">+2.14%</span>
+                        <span class="col-volume">12.3B</span>
+                        <span class="col-market-cap">1.32T</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="col-symbol">ETH/USDT</span>
+                        <span class="col-price">3,847.92</span>
+                        <span class="col-change negative">-0.87%</span>
+                        <span class="col-volume">8.7B</span>
+                        <span class="col-market-cap">462.1B</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="col-symbol">BNB/USDT</span>
+                        <span class="col-price">624.18</span>
+                        <span class="col-change positive">+1.23%</span>
+                        <span class="col-volume">1.2B</span>
+                        <span class="col-market-cap">93.2B</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="col-symbol">SOL/USDT</span>
+                        <span class="col-price">168.34</span>
+                        <span class="col-change positive">+4.67%</span>
+                        <span class="col-volume">2.8B</span>
+                        <span class="col-market-cap">78.4B</span>
+                    </div>
+                    <div class="table-row">
+                        <span class="col-symbol">XRP/USDT</span>
+                        <span class="col-price">0.5234</span>
+                        <span class="col-change negative">-1.45%</span>
+                        <span class="col-volume">1.1B</span>
+                        <span class="col-market-cap">29.8B</span>
+                    </div>
+                </div>
+
+                <!-- Market Stats -->
+                <div class="market-stats">
+                    <div class="stats-header">
+                        <div class="global-info">
+                            <span class="global-label">Global Crypto Market Cap</span>
+                            <span class="global-value">$2.31T</span>
+                            <span class="global-change negative">-1.42%</span>
+                        </div>
+                        <div class="update-time">16:24:33 UTC</div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">24h Volume</span>
+                            <span class="stat-value">$67.8B</span>
+                            <span class="stat-change positive">+3.21%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">BTC Dominance</span>
+                            <span class="stat-value">52.4%</span>
+                            <span class="stat-change positive">+0.18%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">ETH Dominance</span>
+                            <span class="stat-value">17.2%</span>
+                            <span class="stat-change negative">-0.05%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Active Coins</span>
+                            <span class="stat-value">2,847</span>
+                            <span class="stat-neutral">coins</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Markets</span>
+                            <span class="stat-value">24,673</span>
+                            <span class="stat-neutral">pairs</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">DeFi TVL</span>
+                            <span class="stat-value">$94.2B</span>
+                            <span class="stat-change positive">+1.8%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Open Interest</span>
+                            <span class="stat-value">$24.7B</span>
+                            <span class="stat-change positive">+2.1%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Fear & Greed</span>
+                            <span class="stat-value">43</span>
+                            <span class="stat-sentiment fear">Fear</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Liquidations</span>
+                            <span class="stat-value">$142.3M</span>
+                            <span class="stat-change negative">+87.4%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-content" id="popupContent">
+            <h2 id="popupTitle">📉 Oh No!</h2>
+            <p id="popupMessage">Why is it so small? 😢</p>
+            <button class="popup-button" onclick="closePopup()">Close</button>
+        </div>
+    </div>
+
+    <audio id="greenPopupAudio" preload="auto">
+        <source src="green-popup-sound.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        class TradingSimulator {
+            constructor() {
+                this.currentPrice = 1000;
+                this.basePrice = 1000;
+                this.priceHistory = [];
+                this.leverage = 50;
+                this.balance = 1000;
+                this.position = null;
+                this.volume = 0.5;
+                this.consecutiveRedCandles = 0;
+                this.consecutiveGreenCandles = 0;
+                this.redPopupShown = false;
+                this.greenPopupShown = false;
+
+                this.initializeElements();
+                this.setupEventListeners();
+                this.generateInitialHistory(); // Generate initial candlesticks
+                this.startPriceSimulation();
+                this.createAudioContext();
+            }
+
+            initializeElements() {
+                this.priceDisplay = document.getElementById('currentPrice');
+                this.priceChange = document.getElementById('priceChange');
+                this.chart = document.getElementById('chart');
+                this.marketLine = document.getElementById('marketLine');
+                this.balanceDisplay = document.getElementById('balance2');
+                this.activeLeverageDisplay = document.getElementById('activeLeverage2');
+                this.pnlDisplay = document.getElementById('pnl2');
+                this.positionTypeDisplay = document.getElementById('positionType2');
+                this.entryPriceDisplay = document.getElementById('entryPrice2');
+                this.positionSizeDisplay = document.getElementById('positionSize2');
+
+                // Additional professional displays
+                this.marginRequiredDisplay = document.getElementById('marginRequired');
+                this.riskLevelDisplay = document.getElementById('riskLevel');
+                this.liquidationPriceDisplay = document.getElementById('liquidationPrice');
+                this.roeDisplay = document.getElementById('roe');
+
+                // Technical indicators displays
+                this.rsiDisplay = document.getElementById('rsiValue');
+                this.macdDisplay = document.getElementById('macdValue');
+                this.ma20Display = document.getElementById('ma20Value');
+                this.ma50Display = document.getElementById('ma50Value');
+                this.bbDisplay = document.getElementById('bbValue');
+
+                // Initialize technical indicators arrays
+                this.closePrices = [];
+                this.rsiPeriod = 14;
+            }
+
+            createAudioContext() {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            generateInitialHistory() {
+                // Generate 50 initial OHLC candlesticks for realistic display
+                let price = this.currentPrice;
+                console.log('Generating initial OHLC history...');
+
+                for (let i = 0; i < 50; i++) {
+                    const open = price;
+                    
+                    // Generate realistic intracandle movement
+                    // Generate more realistic intra-candle movement
+                    const volatility = 0.005 + Math.random() * 0.015;
+                    const trend = (Math.random() - 0.5) * 0.003;
+                    
+                    // Create more realistic OHLC relationships
+                    const direction = Math.random() > 0.5 ? 1 : -1;
+                    const bodySize = volatility * (0.3 + Math.random() * 0.7);
+                    const upperWick = volatility * (0.1 + Math.random() * 0.6);
+                    const lowerWick = volatility * (0.1 + Math.random() * 0.6);
+                    
+                    // Generate close based on direction and body size
+                    const close = open * (1 + (direction * bodySize) + trend);
+                    
+                    // Generate high and low with proper wick relationships
+                    const high = Math.max(open, close) * (1 + upperWick);
+                    const low = Math.min(open, close) * (1 - lowerWick);
+                    
+                    // Ensure proper OHLC relationships
+                    const adjustedHigh = Math.max(open, close, high);
+                    const adjustedLow = Math.min(open, close, low);
+                    
+                    // Occasionally create special patterns
+                    const patternRandom = Math.random();
+                    let finalOpen = open, finalClose = close, finalHigh = adjustedHigh, finalLow = adjustedLow;
+                    
+                    // Create doji pattern (5% chance)
+                    if (patternRandom < 0.05) {
+                        finalClose = open + (open * 0.001 * (Math.random() - 0.5));
+                    }
+                    // Create hammer pattern (3% chance)
+                    else if (patternRandom < 0.08) {
+                        finalLow = Math.min(open, close) * (1 - volatility * 1.5);
+                    }
+                    // Create shooting star pattern (3% chance)
+                    else if (patternRandom < 0.11) {
+                        finalHigh = Math.max(open, close) * (1 + volatility * 1.5);
+                    }
+
+                    this.priceHistory.push({
+                        open: finalOpen,
+                        high: finalHigh,
+                        low: finalLow,
+                        close: finalClose,
+                        timestamp: Date.now() - (50 - i) * 60000, // 1-minute candles backdated
+                        direction: finalClose > finalOpen ? 'up' : 'down',
+                        volume: 1000 + Math.random() * 5000 // Realistic volume
+                    });
+
+                    price = finalClose; // Next candle starts where this one ended
+                }
+
+                // Set current price to last candle's close
+                this.currentPrice = price;
+
+                console.log(`Generated ${this.priceHistory.length} OHLC candles`);
+                console.log('Current price:', this.currentPrice);
+
+                // Wait for DOM to be ready, then update
+                setTimeout(() => {
+                    this.updatePriceDisplay();
+                    this.updateChart();
+                    this.updateBalance();
+                }, 100);
+            }
+
+            playSound(frequency, duration, type = 'sine') {
+                if (this.volume === 0) return;
+
+                const oscillator = this.audioContext.createOscillator();
+                const gainNode = this.audioContext.createGain();
+
+                oscillator.connect(gainNode);
+                gainNode.connect(this.audioContext.destination);
+
+                oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
+                oscillator.type = type;
+
+                gainNode.gain.setValueAtTime(0, this.audioContext.currentTime);
+                gainNode.gain.linearRampToValueAtTime(this.volume * 0.1, this.audioContext.currentTime + 0.01);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, this.audioContext.currentTime + duration);
+
+                oscillator.start(this.audioContext.currentTime);
+                oscillator.stop(this.audioContext.currentTime + duration);
+            }
+
+            setupEventListeners() {
+                // Leverage buttons
+                document.querySelectorAll('.leverage-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.leverage-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.leverage = parseInt(btn.dataset.leverage);
+                        this.activeLeverageDisplay.textContent = `x${this.leverage}`;
+                        this.updateLeverageDetails();
+                    });
+                });
+
+                // Trade buttons
+                document.getElementById('buyBtn2').addEventListener('click', () => this.openPosition('long'));
+                document.getElementById('sellBtn2').addEventListener('click', () => this.openPosition('short'));
+            }
+
+            openPosition(type) {
+                if (this.position) {
+                    this.closePosition();
+                }
+
+                this.position = {
+                    type: type,
+                    entryPrice: this.currentPrice,
+                    size: (this.balance * this.leverage) / this.currentPrice,
+                    leverage: this.leverage
+                };
+
+                this.updatePositionDisplay();
+                this.playSound(800, 0.2, 'square'); // Position open sound
+            }
+
+            closePosition() {
+                if (!this.position) return;
+
+                const priceDiff = this.currentPrice - this.position.entryPrice;
+                const multiplier = this.position.type === 'long' ? 1 : -1;
+                const pnl = (priceDiff * multiplier * this.position.size);
+
+                this.balance += pnl;
+                this.position = null;
+
+                this.updatePositionDisplay();
+                this.updateBalance();
+
+                this.playSound(pnl > 0 ? 1000 : 300, 0.3, 'triangle'); // Win/Loss sound
+            }
+
+            startPriceSimulation() {
+                // Track current candle formation
+                this.currentCandle = null;
+                this.candleStartTime = Date.now();
+                this.candleInterval = 5000; // 5 second candles
+                
+                setInterval(() => {
+                    const now = Date.now();
+                    const lastCandle = this.priceHistory[this.priceHistory.length - 1];
+                    
+                    // Check if we need to start a new candle (1-minute intervals)
+                    if (!this.currentCandle || (now - this.candleStartTime) >= this.candleInterval) {
+                        // Finalize previous candle if exists
+                        if (this.currentCandle) {
+                            this.priceHistory.push(this.currentCandle);
+                            
+                            // Track consecutive candles for popups
+                            const direction = this.currentCandle.close > this.currentCandle.open ? 'up' : 'down';
+                            if (direction === 'down') {
+                                this.consecutiveRedCandles++;
+                                this.consecutiveGreenCandles = 0;
+                                this.greenPopupShown = false; // Reset green popup when trend changes
+                                console.log('Red candle completed. Consecutive red:', this.consecutiveRedCandles);
+                            } else {
+                                this.consecutiveGreenCandles++;
+                                this.consecutiveRedCandles = 0;
+                                this.redPopupShown = false; // Reset red popup when trend changes
+                                console.log('Green candle completed. Consecutive green:', this.consecutiveGreenCandles);
+                            }
+                        }
+                        
+                        // Start new candle
+                        this.currentCandle = {
+                            open: this.currentPrice,
+                            high: this.currentPrice,
+                            low: this.currentPrice,
+                            close: this.currentPrice,
+                            timestamp: now,
+                            direction: 'up',
+                            volume: 1000 + Math.random() * 5000
+                        };
+                        this.candleStartTime = now;
+                    }
+
+                    // Generate realistic intracandle price movement
+                    const volatility = 0.012 + Math.random() * 0.008;
+                    const trend = (Math.random() - 0.5) * 0.002;
+                    const change = (Math.random() - 0.5) * volatility + trend;
+                    
+                    const oldPrice = this.currentPrice;
+                    this.currentPrice *= (1 + change);
+                    this.currentPrice = Math.max(this.currentPrice, 10);
+
+                    // Update current candle OHLC
+                    if (this.currentCandle) {
+                        this.currentCandle.close = this.currentPrice;
+                        this.currentCandle.high = Math.max(this.currentCandle.high, this.currentPrice);
+                        this.currentCandle.low = Math.min(this.currentCandle.low, this.currentPrice);
+                        this.currentCandle.direction = this.currentCandle.close > this.currentCandle.open ? 'up' : 'down';
+                    }
+
+                    // Keep only last 100 completed candles for performance
+                    if (this.priceHistory.length > 100) {
+                        this.priceHistory.shift();
+                    }
+
+                    this.updatePriceDisplay();
+                    this.updateChart();
+                    this.updatePnL();
+                    this.updateTechnicalIndicators();
+                    this.checkForPopup();
+
+                    // Play sounds for significant price movements
+                    const priceChangePercent = Math.abs((this.currentPrice - oldPrice) / oldPrice) * 100;
+                    if (priceChangePercent > 0.08) {
+                        if (this.currentPrice > oldPrice) {
+                            this.playSound(660, 0.1, 'sine'); // Up sound
+                        } else {
+                            this.playSound(440, 0.1, 'sine'); // Down sound
+                        }
+                    }
+
+                }, 200); // Update every 0.5 seconds for faster candle formation
+            }
+
+            updatePriceDisplay() {
+                const change = this.currentPrice - this.basePrice;
+                const changePercent = (change / this.basePrice) * 100;
+
+                // Handle negative prices display
+                const priceText = this.currentPrice < 0 ? `-$${Math.abs(this.currentPrice).toFixed(2)}` : `$${this.currentPrice.toFixed(2)}`;
+
+                this.priceDisplay.textContent = priceText;
+                this.priceChange.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)} (${changePercent.toFixed(2)}%)`;
+                this.priceChange.className = `price-change ${change >= 0 ? 'price-up' : 'price-down'}`;
+            }
+
+            updateChart() {
+                console.log('updateChart called');
+
+                // Clear existing elements
+                this.chart.innerHTML = '';
+
+                const priceScale = document.getElementById('priceScale');
+                const timeAxis = document.getElementById('timeAxis');
+                if (priceScale) priceScale.innerHTML = '';
+                if (timeAxis) timeAxis.innerHTML = '';
+
+                // Get all candles to display (completed + current forming candle)
+                let candlesToShow = [...this.priceHistory];
+                if (this.currentCandle) {
+                    candlesToShow.push(this.currentCandle);
+                }
+
+                if (candlesToShow.length < 2) {
+                    console.log('Not enough candle history:', candlesToShow.length);
+                    return;
+                }
+
+                const chartWidth = this.chart.offsetWidth || 600;
+                const chartHeight = this.chart.offsetHeight || 350;
+                
+                // Volume chart elements
+                const volumeChart = document.getElementById('volumeChart');
+                const volumeScale = document.getElementById('volumeScale');
+                if (volumeChart) volumeChart.innerHTML = '';
+                if (volumeScale) volumeScale.innerHTML = '';
+                console.log('Chart dimensions:', chartWidth, 'x', chartHeight);
+
+                // Show last 30 candles for better visibility
+                const recent = candlesToShow.slice(-30);
+                
+                // Calculate price range from all OHLC values
+                const allPrices = recent.flatMap(candle => [candle.open, candle.high, candle.low, candle.close]);
+                const minPrice = Math.min(...allPrices);
+                const maxPrice = Math.max(...allPrices);
+                const priceRange = maxPrice - minPrice || 1;
+
+                // Add some padding to the price range
+                const padding = priceRange * 0.05;
+                const adjustedMin = minPrice - padding;
+                const adjustedMax = maxPrice + padding;
+                const adjustedRange = adjustedMax - adjustedMin;
+
+                // Calculate candle width and spacing for realistic proportions
+                const candleSpacing = chartWidth / recent.length;
+                const candleWidth = Math.max(4, Math.min(candleSpacing * 0.8, 12));
+                const wickWidth = Math.max(1, Math.min(2, candleWidth * 0.15));
+
+                recent.forEach((candle, index) => {
+                    const x = (index + 0.5) * candleSpacing;
+                    
+                    // Calculate Y positions for OHLC
+                    const openY = chartHeight - ((candle.open - adjustedMin) / adjustedRange) * chartHeight;
+                    const highY = chartHeight - ((candle.high - adjustedMin) / adjustedRange) * chartHeight;
+                    const lowY = chartHeight - ((candle.low - adjustedMin) / adjustedRange) * chartHeight;
+                    const closeY = chartHeight - ((candle.close - adjustedMin) / adjustedRange) * chartHeight;
+                    
+                    // Determine candle type and dimensions
+                    const isGreen = candle.close > candle.open;
+                    const bodyHeight = Math.abs(closeY - openY);
+                    const bodyTop = Math.min(openY, closeY);
+                    
+                    // Detect special candle patterns
+                    const priceRange = candle.high - candle.low;
+                    const bodySize = Math.abs(candle.close - candle.open);
+                    const isDoji = bodySize < (priceRange * 0.05); // Body is less than 5% of total range
+                    const isHammer = (candle.low < Math.min(candle.open, candle.close) - (priceRange * 0.6));
+                    const isShooting = (candle.high > Math.max(candle.open, candle.close) + (priceRange * 0.6));
+                    
+                    // Set minimum body height for visibility
+                    const finalBodyHeight = isDoji ? 1 : Math.max(2, bodyHeight);
+                    
+                    // Create the wick (high-low line) with realistic metal appearance
+                    const wick = document.createElement('div');
+                    wick.className = 'candlestick-wick';
+                    wick.style.cssText = `
+                        left: ${x - wickWidth/2}px;
+                        top: ${highY}px;
+                        width: ${wickWidth}px;
+                        height: ${Math.max(1, lowY - highY)}px;
+                    `;
+                    this.chart.appendChild(wick);
+                    
+                    // Create the candle body with pattern-specific styling
+                    const body = document.createElement('div');
+                    let bodyClass = 'candlestick-body';
+                    
+                    if (isDoji) {
+                        bodyClass += ' doji';
+                    } else if (isGreen) {
+                        bodyClass += ' bullish';
+                    } else {
+                        bodyClass += ' bearish';
+                    }
+                    
+                    body.className = bodyClass;
+                    body.style.cssText = `
+                        left: ${x - candleWidth/2}px;
+                        top: ${bodyTop}px;
+                        width: ${candleWidth}px;
+                        height: ${finalBodyHeight}px;
+                    `;
+                    
+                    // Add pattern-specific tooltips
+                    let patternName = '';
+                    if (isDoji) patternName = ' (Doji)';
+                    else if (isHammer) patternName = ' (Hammer)';
+                    else if (isShooting) patternName = ' (Shooting Star)';
+                    
+                    body.title = `O: $${candle.open.toFixed(2)} H: $${candle.high.toFixed(2)} L: $${candle.low.toFixed(2)} C: $${candle.close.toFixed(2)}${patternName}`;
+                    
+                    // Add realistic hover effects
+                    body.addEventListener('mouseenter', () => {
+                        body.style.transform = 'scaleX(1.15) scaleY(1.05)';
+                        body.style.zIndex = '10';
+                        body.style.filter = 'brightness(1.2)';
+                    });
+                    body.addEventListener('mouseleave', () => {
+                        body.style.transform = 'scaleX(1) scaleY(1)';
+                        body.style.zIndex = '1';
+                        body.style.filter = 'brightness(1)';
+                    });
+                    
+                    this.chart.appendChild(body);
+                    
+                    // Add current price indicator for the most recent candle
+                    if (index === recent.length - 1) {
+                        const currentPriceLine = document.createElement('div');
+                        currentPriceLine.className = 'current-price-line';
+                        currentPriceLine.style.cssText = `
+                            left: 0;
+                            right: 0;
+                            top: ${closeY}px;
+                        `;
+                        this.chart.appendChild(currentPriceLine);
+                        
+                        // Add price label on the current price line
+                        const priceLabel = document.createElement('div');
+                        priceLabel.style.cssText = `
+                            position: absolute;
+                            right: -60px;
+                            top: ${closeY - 10}px;
+                            background: #ffeb3b;
+                            color: #000;
+                            padding: 2px 6px;
+                            border-radius: 3px;
+                            font-size: 10px;
+                            font-weight: bold;
+                            font-family: 'Courier New', monospace;
+                            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+                            z-index: 15;
+                        `;
+                        priceLabel.textContent = `$${candle.close.toFixed(2)}`;
+                        this.chart.appendChild(priceLabel);
+                    }
+                });
+
+                // Update price scale with better precision
+                if (priceScale) {
+                    for (let i = 0; i <= 8; i++) {
+                        const price = adjustedMin + (adjustedRange * i / 8);
+                        const y = chartHeight - (i / 8) * chartHeight;
+
+                        const label = document.createElement('div');
+                        label.className = 'price-label';
+                        label.textContent = `$${price.toFixed(2)}`;
+                        label.style.top = `${y}px`;
+                        label.style.right = '8px';
+                        label.style.position = 'absolute';
+                        label.style.fontSize = '10px';
+                        label.style.color = '#787b86';
+
+                        priceScale.appendChild(label);
+                    }
+                }
+
+                // Add time labels based on actual candle timestamps
+                if (timeAxis && recent.length > 0) {
+                    const timeLabelsCount = Math.min(6, recent.length);
+                    
+                    for (let i = 0; i < timeLabelsCount; i++) {
+                        const candleIndex = Math.floor((recent.length - 1) * i / (timeLabelsCount - 1));
+                        const candle = recent[candleIndex];
+                        const time = new Date(candle.timestamp);
+                        
+                        const hours = time.getHours().toString().padStart(2, '0');
+                        const minutes = time.getMinutes().toString().padStart(2, '0');
+                        const timeString = `${hours}:${minutes}`;
+
+                        const label = document.createElement('div');
+                        label.className = 'time-label';
+                        label.textContent = timeString;
+                        label.style.position = 'absolute';
+                        label.style.left = `${(candleIndex + 0.5) * candleSpacing}px`;
+                        label.style.top = '8px';
+                        label.style.fontSize = '10px';
+                        label.style.transform = 'translateX(-50%)';
+
+                        timeAxis.appendChild(label);
+                    }
+                }
+
+                // Render volume bars
+                if (volumeChart) {
+                    const volumes = recent.map(candle => candle.volume);
+                    const maxVolume = Math.max(...volumes);
+                    const volumeHeight = 100;
+
+                    recent.forEach((candle, index) => {
+                        const x = (index + 0.5) * candleSpacing;
+                        const barHeight = (candle.volume / maxVolume) * volumeHeight * 0.8;
+                        const barWidth = candleWidth;
+
+                        const volumeBar = document.createElement('div');
+                        volumeBar.className = 'volume-bar';
+                        volumeBar.style.cssText = `
+                            left: ${x - barWidth/2}px;
+                            width: ${barWidth}px;
+                            height: ${barHeight}px;
+                            background: ${candle.direction === 'up' ? 
+                                'linear-gradient(to top, rgba(38, 166, 154, 0.3), rgba(38, 166, 154, 0.6))' : 
+                                'linear-gradient(to top, rgba(239, 83, 80, 0.3), rgba(239, 83, 80, 0.6))'};
+                        `;
+                        
+                        // Add volume tooltip on hover
+                        volumeBar.title = `Volume: ${Math.round(candle.volume).toLocaleString()}`;
+                        
+                        volumeChart.appendChild(volumeBar);
+                    });
+
+                    // Add volume scale labels
+                    if (volumeScale) {
+                        for (let i = 0; i <= 3; i++) {
+                            const volume = (maxVolume * i / 3);
+                            const y = volumeHeight - (i / 3) * volumeHeight;
+
+                            const label = document.createElement('div');
+                            label.className = 'price-label';
+                            label.textContent = `${(volume/1000).toFixed(1)}K`;
+                            label.style.top = `${y}px`;
+                            label.style.right = '8px';
+                            label.style.position = 'absolute';
+                            label.style.fontSize = '9px';
+                            label.style.color = '#787b86';
+
+                            volumeScale.appendChild(label);
+                        }
+                    }
+                }
+
+                console.log('Chart updated with', recent.length, 'realistic candlesticks and volume bars');
+            }
+
+            updatePnL() {
+                if (!this.position) {
+                    this.pnlDisplay.textContent = '$0.00';
+                    this.pnlDisplay.className = '';
+                    return;
+                }
+
+                const priceDiff = this.currentPrice - this.position.entryPrice;
+                const multiplier = this.position.type === 'long' ? 1 : -1;
+                const pnl = priceDiff * multiplier * this.position.size;
+
+                this.pnlDisplay.textContent = `$${pnl.toFixed(2)}`;
+                this.pnlDisplay.className = pnl >= 0 ? 'price-up' : 'price-down';
+            }
+
+            updatePositionDisplay() {
+                if (!this.position) {
+                    this.positionTypeDisplay.textContent = 'None';
+                    this.entryPriceDisplay.textContent = '-';
+                    this.positionSizeDisplay.textContent = '0';
+                    this.liquidationPriceDisplay.textContent = '-';
+                    this.roeDisplay.textContent = '0.00%';
+                } else {
+                    this.positionTypeDisplay.textContent = this.position.type.toUpperCase();
+                    // Handle negative entry price display
+                    const entryPriceText = this.position.entryPrice < 0 ? `-$${Math.abs(this.position.entryPrice).toFixed(2)}` : `$${this.position.entryPrice.toFixed(2)}`;
+                    this.entryPriceDisplay.textContent = entryPriceText;
+                    this.positionSizeDisplay.textContent = this.position.size.toFixed(6);
+
+                    // Calculate liquidation price
+                    const marginRatio = 0.05; // 5% margin call
+                    let liquidationPrice;
+                    if (this.position.type === 'long') {
+                        liquidationPrice = this.position.entryPrice * (1 - (1 / this.leverage) + marginRatio);
+                    } else {
+                        liquidationPrice = this.position.entryPrice * (1 + (1 / this.leverage) - marginRatio);
+                    }
+                    this.liquidationPriceDisplay.textContent = `$${liquidationPrice.toFixed(2)}`;
+
+                    // Calculate ROE (Return on Equity)
+                    const priceDiff = this.currentPrice - this.position.entryPrice;
+                    const multiplier = this.position.type === 'long' ? 1 : -1;
+                    const roe = (priceDiff * multiplier / this.position.entryPrice) * this.leverage * 100;
+                    const roeText = roe >= 0 ? `+${roe.toFixed(2)}%` : `${roe.toFixed(2)}%`;
+                    this.roeDisplay.textContent = roeText;
+                    this.roeDisplay.style.color = roe >= 0 ? '#26a69a' : '#ef5350';
+                }
+            }
+
+            updateBalance() {
+                // Handle negative balance display
+                const balanceText = this.balance < 0 ? `-$${Math.abs(this.balance).toFixed(2)}` : `$${this.balance.toFixed(2)}`;
+                this.balanceDisplay.textContent = balanceText;
+                this.updateLeverageDetails();
+            }
+
+            updateLeverageDetails() {
+                // Calculate margin required for current position
+                if (this.position) {
+                    const marginRequired = (this.position.size * this.currentPrice) / this.leverage;
+                    this.marginRequiredDisplay.textContent = `$${marginRequired.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                } else {
+                    this.marginRequiredDisplay.textContent = '$0.00';
+                }
+
+                // Update risk level based on leverage
+                if (this.leverage <= 10) {
+                    this.riskLevelDisplay.textContent = 'LOW';
+                    this.riskLevelDisplay.style.color = '#26a69a';
+                } else if (this.leverage <= 50) {
+                    this.riskLevelDisplay.textContent = 'MEDIUM';
+                    this.riskLevelDisplay.style.color = '#ff8c00';
+                } else {
+                    this.riskLevelDisplay.textContent = 'HIGH';
+                    this.riskLevelDisplay.style.color = '#ef5350';
+                }
+            }
+
+            // Technical Indicators Calculations
+            calculateRSI(prices, period = 14) {
+                if (prices.length < period) return 50;
+
+                let gains = 0;
+                let losses = 0;
+
+                // Calculate initial average gain and loss
+                for (let i = 1; i <= period; i++) {
+                    const change = prices[i] - prices[i - 1];
+                    if (change > 0) gains += change;
+                    else losses += Math.abs(change);
+                }
+
+                let avgGain = gains / period;
+                let avgLoss = losses / period;
+
+                // Calculate RSI for remaining prices
+                for (let i = period + 1; i < prices.length; i++) {
+                    const change = prices[i] - prices[i - 1];
+                    const gain = change > 0 ? change : 0;
+                    const loss = change < 0 ? Math.abs(change) : 0;
+
+                    avgGain = (avgGain * (period - 1) + gain) / period;
+                    avgLoss = (avgLoss * (period - 1) + loss) / period;
+                }
+
+                const rs = avgGain / avgLoss;
+                return 100 - (100 / (1 + rs));
+            }
+
+            calculateMACD(prices, fastPeriod = 12, slowPeriod = 26, signalPeriod = 9) {
+                if (prices.length < slowPeriod) return { macd: 0, signal: 0, histogram: 0 };
+
+                const calculateEMA = (data, period) => {
+                    const k = 2 / (period + 1);
+                    let ema = data[0];
+                    for (let i = 1; i < data.length; i++) {
+                        ema = data[i] * k + ema * (1 - k);
+                    }
+                    return ema;
+                };
+
+                const fastEMA = calculateEMA(prices.slice(-fastPeriod), fastPeriod);
+                const slowEMA = calculateEMA(prices.slice(-slowPeriod), slowPeriod);
+                const macd = fastEMA - slowEMA;
+
+                // For simplicity, using a basic signal line calculation
+                const signal = macd * 0.9; // Simplified signal line
+                const histogram = macd - signal;
+
+                return { macd, signal, histogram };
+            }
+
+            calculateMovingAverage(prices, period) {
+                if (prices.length < period) return prices[prices.length - 1] || 1000;
+
+                const sum = prices.slice(-period).reduce((acc, price) => acc + price, 0);
+                return sum / period;
+            }
+
+            calculateBollingerBands(prices, period = 20, stdDev = 2) {
+                if (prices.length < period) return { upper: 1000, middle: 1000, lower: 1000 };
+
+                const recentPrices = prices.slice(-period);
+                const sma = recentPrices.reduce((sum, price) => sum + price, 0) / period;
+
+                const variance = recentPrices.reduce((sum, price) => sum + Math.pow(price - sma, 2), 0) / period;
+                const standardDeviation = Math.sqrt(variance);
+
+                return {
+                    upper: sma + (standardDeviation * stdDev),
+                    middle: sma,
+                    lower: sma - (standardDeviation * stdDev)
+                };
+            }
+
+            updateTechnicalIndicators() {
+                // Keep last 100 prices for calculations
+                this.closePrices.push(this.currentPrice);
+                if (this.closePrices.length > 100) {
+                    this.closePrices.shift();
+                }
+
+                if (this.closePrices.length >= 2) {
+                    // RSI
+                    const rsi = this.calculateRSI(this.closePrices, this.rsiPeriod);
+                    this.rsiDisplay.textContent = rsi.toFixed(1);
+                    if (rsi > 70) {
+                        this.rsiDisplay.style.color = '#ef5350'; // Overbought
+                    } else if (rsi < 30) {
+                        this.rsiDisplay.style.color = '#26a69a'; // Oversold
+                    } else {
+                        this.rsiDisplay.style.color = '#ff8c00'; // Neutral
+                    }
+
+                    // MACD
+                    const macd = this.calculateMACD(this.closePrices);
+                    this.macdDisplay.textContent = macd.macd.toFixed(2);
+                    this.macdDisplay.style.color = macd.macd > 0 ? '#26a69a' : '#ef5350';
+
+                    // Moving Averages
+                    const ma20 = this.calculateMovingAverage(this.closePrices, 20);
+                    const ma50 = this.calculateMovingAverage(this.closePrices, 50);
+                    this.ma20Display.textContent = `$${ma20.toFixed(2)}`;
+                    this.ma50Display.textContent = `$${ma50.toFixed(2)}`;
+
+                    // Bollinger Bands
+                    const bb = this.calculateBollingerBands(this.closePrices);
+                    if (this.currentPrice > bb.upper) {
+                        this.bbDisplay.textContent = 'UPPER';
+                        this.bbDisplay.style.color = '#ef5350';
+                    } else if (this.currentPrice < bb.lower) {
+                        this.bbDisplay.textContent = 'LOWER';
+                        this.bbDisplay.style.color = '#26a69a';
+                    } else {
+                        this.bbDisplay.textContent = 'MIDDLE';
+                        this.bbDisplay.style.color = '#607d8b';
+                    }
+                }
+            }
+
+            checkForPopup() {
+                // Show red popup after 2 consecutive red candles
+                if (this.consecutiveRedCandles >= 2 && !this.redPopupShown) {
+                    console.log('Showing red popup - consecutive red:', this.consecutiveRedCandles);
+                    this.redPopupShown = true;
+                    this.showRedPopup();
+                }
+
+                // Show green popup after 2 consecutive green candles
+                if (this.consecutiveGreenCandles >= 2 && !this.greenPopupShown) {
+                    console.log('Showing green popup - consecutive green:', this.consecutiveGreenCandles);
+                    this.greenPopupShown = true;
+                    this.showGreenPopup();
+                }
+
+                // Debug logging for consecutive candles
+                if (this.consecutiveRedCandles > 0) {
+                    console.log('Consecutive red candles:', this.consecutiveRedCandles);
+                }
+                if (this.consecutiveGreenCandles > 0) {
+                    console.log('Consecutive green candles:', this.consecutiveGreenCandles);
+                }
+            }
+
+            showRedPopup() {
+                console.log('showRedPopup called');
+                const messages = [
+                    { title: "😰 Going Limp & Soft", message: "Your position is shrinking fast! This bear market is making everything go flaccid... 📉💔" },
+                    { title: "💸 Premature Liquidation", message: "Oops! You finished too early! Your position got liquidated before reaching satisfaction. Try lasting longer next time!" },
+                    { title: "🔴 Bleeding Out Hard", message: "The market is bleeding heavily! This red candle penetration is hurting everyone's portfolios! 🩸" },
+                    { title: "📉 Can't Get It Up", message: "Price can't seem to get hard anymore... Bulls lost their stamina. Performance anxiety in the market! 😞" },
+                    { title: "💔 Dumped & Disappointed", message: "Just got pump and dumped! Left unsatisfied as whales pulled out too quickly and ruined the party!" },
+                    { title: "🥶 Cold & Wet Market", message: "Market sentiment is cold and wet with fear! Bears are dominating and nobody's getting excited anymore..." },
+                    { title: "😢 Small Position Shame", message: "Your position is so small now... Everyone's pointing and laughing at these tiny gains turned losses!" },
+                    { title: "🔻 Penetrated From Behind", message: "Bears penetrated your support from behind! Didn't see that aggressive selling pressure coming! 🐻" }
+                ];
+
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+                const popupContent = document.getElementById('popupContent');
+                const popupOverlay = document.getElementById('popupOverlay');
+
+                if (popupContent && popupOverlay) {
+                    popupContent.className = 'popup-content'; // Remove green class
+
+                    document.getElementById('popupTitle').textContent = randomMessage.title;
+                    document.getElementById('popupMessage').textContent = randomMessage.message;
+                    popupOverlay.style.display = 'flex';
+                    console.log('Red popup displayed');
+
+                    // Auto-close popup after 8 seconds
+                    setTimeout(() => {
+                        closePopup();
+                    }, 8000);
+                } else {
+                    console.error('Popup elements not found');
+                }
+            }
+
+            showGreenPopup() {
+                console.log('showGreenPopup called');
+                const messages = [
+                    { title: "🚀 Massive Pump Alert!", message: "Your position is getting bigger and harder to ignore! This bull run feels so good! 💦📈" },
+                    { title: "💎 Long & Hard Rally", message: "This uptrend is lasting longer than expected... Keep riding it until climax at $69,420!" },
+                    { title: "🔥 Hot Liquidity Injection", message: "Whales are injecting massive liquidity! The market is so wet with money right now! 💦💰" },
+                    { title: "📈 Penetrating Resistance", message: "We're penetrating through every resistance level! Nothing can stop this explosive growth!" },
+                    { title: "💥 Explosive Volume Surge", message: "Volume is exploding everywhere! The market is climaxing with this incredible performance!" },
+                    { title: "🍆 Big Green Candle", message: "Look at that massive green candle! It's so thick and long, making everyone satisfied! 🕯️💚" },
+                    { title: "💦 Liquidating Shorts", message: "Short sellers getting liquidated hard! This pump is making them wet their pants with losses!" },
+                    { title: "🥵 Market Getting Hot", message: "Temperature rising! Bulls are getting sweaty from this intense action. Don't pull out now!" }
+                ];
+
+                const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+
+                const popupContent = document.getElementById('popupContent');
+                const popupOverlay = document.getElementById('popupOverlay');
+                const audio = document.getElementById('greenPopupAudio');
+
+                if (popupContent && popupOverlay) {
+                    popupContent.className = 'popup-content green';
+
+                    document.getElementById('popupTitle').textContent = randomMessage.title;
+                    document.getElementById('popupMessage').textContent = randomMessage.message;
+                    popupOverlay.style.display = 'flex';
+
+                    // Play the MP3 audio with volume control and duration limit
+                    if (audio) {
+                        console.log('Audio element found, attempting to play...');
+                        console.log('Current volume setting:', this.volume);
+
+                        audio.volume = this.volume * 0.7; // Use the app's volume setting (70% of main volume)
+                        console.log('Audio volume set to:', audio.volume);
+
+                        // Wait for audio to load before setting currentTime
+                        const playAudio = () => {
+                            audio.currentTime = 20; // Start from 20 seconds into the file
+                            console.log('Audio currentTime set to:', audio.currentTime);
+
+                            audio.play().then(() => {
+                                console.log('Audio started playing successfully');
+                            }).catch(e => {
+                                console.error('Audio play failed:', e);
+                                // Try playing from beginning if 20s fails
+                                audio.currentTime = 0;
+                                audio.play().catch(e2 => console.error('Audio play from start also failed:', e2));
+                            });
+
+                            // Stop audio after 5 seconds
+                            setTimeout(() => {
+                                console.log('Stopping audio after 5 seconds');
+                                audio.pause();
+                                audio.currentTime = 20; // Reset to 20 seconds for next time
+                            }, 5000);
+                        };
+
+                        if (audio.readyState >= 2) { // HAVE_CURRENT_DATA or higher
+                            playAudio();
+                        } else {
+                            console.log('Audio not ready, waiting for loadeddata event');
+                            audio.addEventListener('loadeddata', playAudio, { once: true });
+                            audio.load(); // Force load
+                        }
+                    } else {
+                        console.error('Audio element not found!');
+                    }
+
+                    console.log('Green popup displayed');
+
+                    // Auto-close popup after 8 seconds
+                    setTimeout(() => {
+                        closePopup();
+                    }, 8000);
+                } else {
+                    console.error('Popup elements not found');
+                }
+            }
+        }
+
+        function closePopup() {
+            document.getElementById('popupOverlay').style.display = 'none';
+        }
+
+        // Initialize the trading simulator when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing simulator...');
+            window.simulator = new TradingSimulator();
+        });
+
+        // Handle audio context user interaction requirement
+        document.addEventListener('click', function initAudio() {
+            if (window.simulator && window.simulator.audioContext.state === 'suspended') {
+                window.simulator.audioContext.resume();
+            }
+            document.removeEventListener('click', initAudio);
+        }, { once: true });
+    </script>
+</body>
+</html>
